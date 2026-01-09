@@ -1,12 +1,10 @@
-const App = () => {
+// import Home from './components/pages/Home'
+import Category from './components/pages/Category'
+
+export default function App() {
   return (
-    <div className="text-3xl font-bold underline">
-      Hello world!
-      <p className="mt-4 text-lg">
-        This is a simple example of a React component styled with Tailwind CSS.
-      </p>
-    </div>
+    
+    // <Home />
+    <Category />
   )
 }
-
-export default App

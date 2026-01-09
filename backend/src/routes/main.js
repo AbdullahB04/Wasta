@@ -29,10 +29,33 @@ router.get('/', async (req, res) => {
 })
 
 // BROWSE WORKERS ROUTE - List all workers with basic info
-router.get('/Browse', async (req,res) => {
+router.get('/browse', async (req,res) => {
+    const { search, address } = req.query
+    const category = req.query.category || null;
+    const where = {}
+    if (search && search.length > 0 && search.trim() !== '') {
+        where.OR = [
+            {  firstName: { contains: search.trim(), mode: 'insensitive' } },
+            {  lastName: { contains: search.trim(), mode: 'insensitive' } },
+        ]
+    }
+    if (address && address.length > 0 && address.trim() !== '') {
+        where.address = { contains: address.trim(), mode: 'insensitive' }
+    }
+    if (category && category.length > 0 && category.trim() !== '') {
+        where.services = {
+            some: {
+            service: {
+                name: { contains: category, mode: 'insensitive' }
+            }
+            }
+        };
+        }
+
     try {
-        const workers = await prisma.worker.findMany({
-            select: {
+    const workers = await prisma.worker.findMany({
+        where,
+        select: {
                 id: true,
                 firstName: true,
                 lastName: true,
@@ -47,18 +70,72 @@ router.get('/Browse', async (req,res) => {
             success: true,
             data: {
                 workers: workers,
-                totalWorkers: workers.length
+                totalWorkers: workers.length,
+                filters: { search, address, category }
             }
         })
     } catch (error) {
         console.error('Browse route error:', error);
-        res.status(500).json({
+        res.status(500).json({  
             success: false,
             error: 'Failed to load workers data'
         });
     }
 })
 
+// WORKER DETAIL ROUTE - Get detailed info for a specific worker
+router.get("/worker/:id", async (req,res) => {
+    const { id } = req.params;
+
+    try {
+        const worker = await prisma.worker.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                address: true,
+                bio: true,
+
+                services: {
+                    include: {
+                        service: {
+                            select: {
+                                id: true,
+                                name: true,
+                                description: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if(!worker) {
+            return res.status(404).json({
+                success: false,
+                error: 'Worker not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                worker
+            }
+        });
+
+    } catch (error) {
+        console.error('Worker detail route error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to load worker details'
+        });
+    }
+})
+
+// CATEGORIES ROUTE - List all service categories
 router.get('/categories', async (req, res) => {
     try {
         const categories = await prisma.service.findMany({
