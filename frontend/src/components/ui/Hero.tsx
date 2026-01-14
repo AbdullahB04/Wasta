@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import {Link} from 'react-router-dom';
 
 const Hero: React.FC = () => {
   const [index, setIndex] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const images: string[] = [
     "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800",
@@ -48,30 +47,15 @@ const Hero: React.FC = () => {
             </div>
 
             {/* Compact Search Bar */}
-            <div className="relative max-w-lg">
-              <div className="flex items-center bg-white rounded-xl p-1 shadow-lg shadow-blue-900/5 border border-slate-100 focus-within:ring-2 ring-blue-500/20 transition-all">
-                <Search className="ml-3 w-5 h-5 text-slate-400 shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Electrician, Plumber..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-3 py-3 bg-transparent outline-none text-slate-700 placeholder:text-slate-400"
-                />
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-all active:scale-95">
-                  Search
-                </button>
-              </div>
-            </div>
 
             {/* Clean Buttons */}
             <div className="flex items-center gap-4 pt-2">
-              <button className="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all text-sm shadow-md">
+              <Link to="/register" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all text-sm shadow-md">
                 Register as User
-              </button>
-              <button className="px-6 py-3 text-slate-600 rounded-xl font-semibold border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all text-sm">
+              </Link>
+              <Link to="/register?role=worker" className="px-6 py-3 text-slate-600 rounded-xl font-semibold border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all text-sm">
                 Register as Worker
-              </button>
+              </Link>
             </div>
           </motion.div>
 

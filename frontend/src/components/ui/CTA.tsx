@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import {Link} from 'react-router-dom';
+
 
 const CallToAction = () => {
   return (
@@ -23,15 +25,13 @@ const CallToAction = () => {
           <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
             
             {/* Badge - Now Slate/Blue style */}
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-semibold mb-8"
             >
-              <Sparkles className="w-4 h-4 text-blue-500 fill-blue-500" />
-              <span>Trusted by 10,000+ users</span>
-            </motion.div>
+            </motion.div> */}
 
             {/* Heading - Dark Text for Contrast */}
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
@@ -48,6 +48,7 @@ const CallToAction = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
               
               {/* Primary: Solid Blue */}
+              <Link to="/worker">
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -56,8 +57,10 @@ const CallToAction = () => {
                 Start Hiring Today
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </motion.button>
+              </Link>
 
               {/* Secondary: White with Border */}
+              <Link to="/register?role=worker">
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -65,6 +68,7 @@ const CallToAction = () => {
               >
                 Become a Service Provider
               </motion.button>
+              </Link>
 
             </div>
           </div>

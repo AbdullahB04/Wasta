@@ -1,24 +1,50 @@
 import { motion } from 'framer-motion';
 import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home } from 'lucide-react'; // Using Lucide for consistency
 import SpotlightCard from "../ui/SpotlightCard"; // Keeping your component
+import { Link } from 'react-router-dom';
+import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
+import Footer from '../ui/Footer';
+
 
 const Category = () => {
   
   // Example data to make the grid look real
   const categories = [
     { name: "Plumbing", icon: <Wrench className="w-10 h-10 text-blue-500" />, count: "120+ Pros" },
-    { name: "Electrical", icon: <Zap className="w-10 h-10 text-yellow-500" />, count: "85+ Pros" },
-    { name: "Painting", icon: <PaintBucket className="w-10 h-10 text-pink-500" />, count: "64+ Pros" },
-    { name: "Moving", icon: <Truck className="w-10 h-10 text-green-500" />, count: "40+ Pros" },
-    { name: "Cleaning", icon: <Home className="w-10 h-10 text-cyan-500" />, count: "200+ Pros" },
-    { name: "Landscaping", icon: <Search className="w-10 h-10 text-emerald-500" />, count: "50+ Pros" },
+    { name: "Electrical", icon: <Zap className="w-10 h-10 text-blue-500" />, count: "85+ Pros" },
+    { name: "Painting", icon: <PaintBucket className="w-10 h-10 text-blue-500" />, count: "64+ Pros" },
+    { name: "Moving", icon: <Truck className="w-10 h-10 text-blue-500" />, count: "40+ Pros" },
+    { name: "Cleaning", icon: <Home className="w-10 h-10 text-blue-500" />, count: "200+ Pros" },
+    { name: "Landscaping", icon: <Search className="w-10 h-10 text-blue-500" />, count: "50+ Pros" },
   ];
+    const navItems = [
+    {
+      name: 'Home',
+      link: '/',
+    },
+    {
+      name: 'Workers',
+      link: '/worker'
+    },
+    {
+      name: 'Categories',
+      link: '/category'
+    }
+  ]
 
   return (
     <div className="min-h-screen bg-white">
+          <NavBody>
+      <NavbarLogo />
+        <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            <NavbarButton variant="secondary">Login</NavbarButton>
+            <Link to="/Login"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>Sign in</NavbarButton></Link>
+          </div>
+    </NavBody>
       
       {/* 1. Page Header (Clean & Airy) */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
+      <section className="relative py-20 lg:py-28 mb-2 overflow-hidden bg-blue-50/50 border-transparent border-slate-200">
         {/* Background Blobs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] -z-10" />
         
@@ -29,9 +55,9 @@ const Category = () => {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6">
-              Explore Service <br />
+              Explore  <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                Categories
+                Services
               </span>
             </h1>
             <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
@@ -103,14 +129,14 @@ const Category = () => {
                 Browse our complete directory of skilled professionals and filter by specific skills, location, or rating.
               </p>
               
-              <button className="px-10 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95">
+              <Link to="/worker"><button className="px-10 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95">
                 Browse All Workers
-              </button>
+              </button></Link>
             </div>
           </div>
         </div>
       </section>
-
+      <Footer />
     </div>
   );
 };

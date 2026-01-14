@@ -4,6 +4,9 @@ import CTA from '../ui/CTA'
 import { GrMapLocation } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
+import Footer from '../ui/Footer';
+import {Link} from 'react-router-dom';
 // import img1 from '../../assets/4.jpg'
 // import img2 from '../../assets/5.jpg'
 // import img3 from '../../assets/6.jpg'
@@ -46,9 +49,31 @@ const content = [
 
 
 const Home = () => {
+  const navItems = [
+    {
+      name: 'Home',
+      link: '/',
+    },
+    {
+      name: 'Workers',
+      link: '/worker'
+    },
+    {
+      name: 'Categories',
+      link: '/category'
+    }
+  ]
 
   return (
   <div>
+    <NavBody>
+      <NavbarLogo />
+        <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            <NavbarButton variant="secondary">Login</NavbarButton>
+            <Link to="/Login"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>Sign in</NavbarButton></Link>
+          </div>
+    </NavBody>
     <section id='hero'>
       <Hero />
     </section>
@@ -58,6 +83,7 @@ const Home = () => {
     <section id='call-to-action'>
       <CTA />
     </section>
+    <Footer />
   </div>
   )
 }
