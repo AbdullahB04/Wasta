@@ -23,7 +23,7 @@ const content = [
   },
   { 
     title: 'View Profiles',
-    description: 'Connect with verified workers who have a track record of excellence.',
+    description: 'Connect with workers who have a track record of excellence.',
     content: (
       <div>
         <ImProfile size={180} className="text-sky-400 mx-auto mt-6" />

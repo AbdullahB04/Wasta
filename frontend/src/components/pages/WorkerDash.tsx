@@ -6,7 +6,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, ShieldCheck } from "lucide-react";
+import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 

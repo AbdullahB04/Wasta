@@ -7,6 +7,7 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import Login from './components/pages/Login';
 import WorkerDashboard from './components/pages/WorkerDash';
 import UserDashboard from './components/pages/UserDash';
+import HomeK from './components/pages/HomeK';
 
 export default function App() {
   return (
@@ -14,6 +15,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/K" element={<HomeK />} />
+
         <Route path="/user/dashboard" element={<UserDashboard />} />
         <Route path="/worker" element={<Worker />} />
         <Route path="/worker/dashboard" element={<WorkerDashboard />} />

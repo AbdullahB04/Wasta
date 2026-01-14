@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Search, MapPin, Star, Filter, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
+import { Search, MapPin, Star, Filter, SlidersHorizontal } from 'lucide-react';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
 import { Link } from 'react-router-dom';
 import Footer from '../ui/Footer';
 import BasicModal from '../ui/Animated-modal';
-import Avatar from '@mui/material/Avatar'; 
+import Avatar from '@mui/material/Avatar';
 
 const Worker = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,10 +12,10 @@ const Worker = () => {
   const [sortBy, setSortBy] = useState("rating");
 
   const workers = [
-    { id: 1, name: "Ahmed Hassan", role: "Master Plumber", location: "Erbil, Kurdistan", rating: 4.8, reviews: 124, tags: ["Plumbing", "Repair"], image: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&q=80&w=200"},
-    { id: 2, name: "Sarah Jameel", role: "Interior Designer", location: "Sulaymaniyah", rating: 5.0, reviews: 89, tags: ["Design", "Decor"], image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200"},
-    { id: 3, name: "Karim Ali", role: "Electrician", location: "Duhok", rating: 4.5, reviews: 56, tags: ["Wiring", "Install"], image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"},
-    { id: 4, name: "John Doe", role: "General Technician", location: "Erbil", rating: 4.2, reviews: 30, tags: ["Repair", "Maintenance"], image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200"},
+    { id: 1, name: "Ahmed Hassan", location: "Erbil, Kurdistan", rating: 4.8, reviews: 124, tags: ["Plumbing", "Repair"], image: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&q=80&w=200"},
+    { id: 2, name: "Sarah Jameel", location: "Sulaymaniyah", rating: 5.0, reviews: 89, tags: ["Design", "Decor"], image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200"},
+    { id: 3, name: "Karim Ali", location: "Duhok", rating: 4.5, reviews: 56, tags: ["Wiring", "Install"], image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"},
+    { id: 4, name: "John Doe", location: "Erbil", rating: 4.2, reviews: 30, tags: ["Repair", "Maintenance"], image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200"},
   ];
 
   const categories = [
@@ -123,22 +123,14 @@ const Worker = () => {
                     src={worker.image} 
                     sx={{ width: 64, height: 64, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
                   />
-                  
-                  {worker.verified && (
-                    <div className="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full z-10">
-                      <CheckCircle2 className="w-5 h-5 text-blue-500 fill-blue-50" />
-                    </div>
-                  )}
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
                     {worker.name}
                   </h3>
-                  <p className="text-sm text-slate-500 font-medium mb-1">{worker.role}</p>
                   <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
                     <Star className="w-3 h-3 fill-amber-400" />
                     <span>{worker.rating}</span>
-                    <span className="text-slate-400 font-normal">({worker.reviews})</span>
                   </div>
                 </div>
               </div>
@@ -150,7 +142,11 @@ const Worker = () => {
                     {tag}
                   </span>
                 ))}
-              </div>
+                </div>
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+                  <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mb-4">Phone :</span>
+                  {/* <span> retrieve from DB</span> */}
+                </div>
 
               {/* Footer: Location & Action */}
               <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between gap-3">
