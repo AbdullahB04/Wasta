@@ -12,8 +12,8 @@ import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
 
 
-const WorkerDashboard = () => {
-  usePageTitle("Worker Dashboard");
+const WorkerDashboardK = () => {
+  usePageTitle("پڕۆفایلی وەستا");
   const [formData, setFormData] = useState({
     firstName: "Ahmed",
     lastName: "Hassan",
@@ -25,9 +25,9 @@ const WorkerDashboard = () => {
   });
 
   const [languages, setLanguages] = useState({
-    kurdish: true,
-    english: true,
-    arabic: false,
+    کوردی: true,
+    ئینگلیزی: true,
+    عەرەبی: false,
   });
 
   const [skills, setSkills] = useState([
@@ -39,7 +39,7 @@ const WorkerDashboard = () => {
   const [newSkill, setNewSkill] = useState("");
   const [isActive, setIsActive] = useState(true);
 
-  const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
+  const availableLocations = ["هەولێر", "دهۆک", "سلێمانی", "کەرکوک", "هەڵەبجە"];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -89,27 +89,26 @@ const WorkerDashboard = () => {
   };
 
   return (
-    <div dir="ltr" className="min-h-screen bg-slate-50/50 pb-20">
+    <div dir="rtl" className="min-h-screen bg-slate-50/50 pb-20">
       
       {/* 1. Glass Header */}
-      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <div dir="ltr" className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link to="/worker">
+              <Link to="/workerK">
                 <Button variant="ghost" size="icon" className="hover:bg-slate-100 rounded-full">
                   <ArrowLeft className="h-5 w-5 text-slate-600" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">My Dashboard</h1>
-                <p className="text-sm text-slate-500">Manage your professional profile</p>
+                <h1 className="text-xl font-bold text-slate-900">پڕۆفایلەکەم</h1>
               </div>
             </div>
             
             <div className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-               {isActive ? "Profile Active" : "Profile Hidden"}
+               {isActive ? "چاڵاك" : "ناچاڵاك"}
             </div>
           </div>
         </div>
@@ -185,11 +184,8 @@ const WorkerDashboard = () => {
                 <div className="flex items-center justify-between px-1">
                   <div className="space-y-0.5">
                     <Label htmlFor="active-status" className="text-base font-semibold text-slate-700">
-                      Online Status
+                      دۆخی کار
                     </Label>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Visible to clients
-                    </p>
                   </div>
                     <Switch
                       id="active-status"
@@ -216,30 +212,29 @@ const WorkerDashboard = () => {
                     <User className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Personal Details</CardTitle>
-                    <CardDescription>Update your basic contact information.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">زانیاری کەسی</CardTitle>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-5 pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-slate-700">First Name</Label>
+                    <Label htmlFor="firstName" className="text-slate-700">ناوی یەکەم</Label>
                     <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-slate-700">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-slate-700">ناوی دووەم</Label>
                     <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="age" className="text-slate-700">Age</Label>
+                    <Label htmlFor="age" className="text-slate-700">تەمەن</Label>
                     <Input id="age" name="age" type="number" value={formData.age} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber" className="text-slate-700">Phone Number</Label>
+                    <Label htmlFor="phoneNumber" className="text-slate-700">ژمارەی مۆبایل</Label>
                     <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                 </div>
@@ -248,7 +243,7 @@ const WorkerDashboard = () => {
                 <div className="space-y-2">
                   <Label htmlFor="location" className="text-slate-700 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-slate-500" />
-                    Location
+                    شوێن
                   </Label>
                   <select 
                     name="location" 
@@ -257,7 +252,7 @@ const WorkerDashboard = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-white"
                   >
-                    <option value="" disabled>Select your location</option>
+                    <option value="" disabled>شوێنەکەت هەڵبژێرە</option>
                     {availableLocations.map((loc) => (
                       <option key={loc} value={loc}>
                         {loc}
@@ -267,7 +262,7 @@ const WorkerDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description" className="text-slate-700">Description</Label>
+                  <Label htmlFor="description" className="text-slate-700">دەربارە</Label>
                   <Input id="description" name="description" value={formData.description} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                 </div>
                 
@@ -282,8 +277,8 @@ const WorkerDashboard = () => {
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Languages</CardTitle>
-                    <CardDescription>Select the languages you can speak fluently.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">زمانەکان</CardTitle>
+                    <CardDescription>زمانەکان هەڵبژێرە کە دەتوانیت قسەی پێ بکەیت.</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -319,8 +314,7 @@ const WorkerDashboard = () => {
                     <Briefcase className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Professional Skills</CardTitle>
-                    <CardDescription>Add skills to help clients find you.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">لێهاتوویی و شارەزاییەکان</CardTitle>
                   </div>
                 </div>
               </CardHeader>
@@ -330,11 +324,11 @@ const WorkerDashboard = () => {
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="e.g. Pipe Fitting"
+                    placeholder="بۆنمونە: بۆڕیچی،کارەباچی..."
                     className="flex-1 border-slate-200 focus-visible:ring-blue-500/20"
                   />
                   <Button onClick={addSkill} className="bg-slate-900 hover:bg-slate-800 text-white shrink-0">
-                    <Plus className="h-4 w-4 mr-2" /> Add
+                    <Plus className="h-4 w-4 mr-2" /> زیادکردن
                   </Button>
                 </div>
 
@@ -356,7 +350,7 @@ const WorkerDashboard = () => {
                     </Badge>
                   ))}
                   {skills.length === 0 && (
-                    <p className="text-sm text-slate-400 italic">No skills added yet. Add some above!</p>
+                    <p className="text-sm text-slate-400 italic">هیچ توانایەک نەزیادکراوە تاکو ئێستا. لەسەرەوە هەوڵبدە زیاد بکە!</p>
                   )}
                 </div>
               </CardContent>
@@ -366,7 +360,7 @@ const WorkerDashboard = () => {
             <div className="flex justify-end pt-4">
                <Button onClick={handleSave} size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-95">
                  <Save className="h-4 w-4 mr-2" />
-                 Save Changes
+                 هەڵگرتن
                </Button>
             </div>
             
@@ -377,4 +371,4 @@ const WorkerDashboard = () => {
   );
 };
 
-export default WorkerDashboard;
+export default WorkerDashboardK;

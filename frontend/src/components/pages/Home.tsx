@@ -5,11 +5,9 @@ import { GrMapLocation } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
-import Footer from '../ui/Footer';
 import {Link} from 'react-router-dom';
-// import img1 from '../../assets/4.jpg'
-// import img2 from '../../assets/5.jpg'
-// import img3 from '../../assets/6.jpg'
+import Footer from '../ui/Footer';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const content = [
   {
@@ -31,7 +29,7 @@ const content = [
     ),
   },
   {
-    title: 'Chat & Hire',
+    title: 'Communicate & Hire',
     description: 'Communicate directly with workers to discuss your needs and hire with confidence.',
     content: (
       <div>
@@ -41,14 +39,12 @@ const content = [
   },
 ]
 
-// const images = [
-//   img1,
-//   img2,
-//   img3,
-// ]
+
 
 
 const Home = () => {
+  usePageTitle('Home')
+
   const navItems = [
     {
       name: 'Home',
@@ -65,12 +61,12 @@ const Home = () => {
   ]
 
   return (
-  <div>
+  <div dir='ltr'>
     <NavBody>
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
+            {/* <NavbarButton variant="secondary">Login</NavbarButton> */}
             <Link to="/Login"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>Sign in</NavbarButton></Link>
           </div>
     </NavBody>

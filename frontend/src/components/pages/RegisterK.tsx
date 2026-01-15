@@ -18,7 +18,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 
 
 const RegistrationForm = () => {
-  usePageTitle('Register');
+  usePageTitle('خۆ تۆمارکردن');
   const [searchParams] = useSearchParams();
   const [role, setRole] = useState<'client' | 'worker'>(searchParams.get('role') === 'worker' ? 'worker' : 'client');
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ const RegistrationForm = () => {
         {/* Back button */}
         <button
           type="button"
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/loginK')}
           aria-label="Back"
           className="absolute left-4 top-4 p-2 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
         >
@@ -40,7 +40,7 @@ const RegistrationForm = () => {
         {/* Close button */}
         <button
           type="button"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/K')}
           aria-label="Close"
           className="absolute right-4 top-4 p-2 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
         >
@@ -51,11 +51,8 @@ const RegistrationForm = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
           <div>
             <h2 className="text-3xl font-bold text-slate-900">
-              {role === 'client' ? 'Join as User' : 'Join as Worker'}
+              {role === 'client' ? 'چوونەژوورەوە وەك بەکارهێنەر' : 'چوونەژوورەوە وەك وەستا'}
             </h2>
-            <p className="text-slate-500 mt-1">
-              {role === 'client' ? 'Find the perfect professional.' : 'Find your next job.'}
-            </p>
           </div>
 
           {/* Role Toggle Pill */}
@@ -71,7 +68,7 @@ const RegistrationForm = () => {
               }`}
             >
               <User size={18} />
-              I need workers
+              وەستام پێویستە
             </button>
             <button 
               id='worker'
@@ -84,7 +81,7 @@ const RegistrationForm = () => {
               }`}
             >
               <Briefcase size={18} />
-              I'm a worker
+              من وەستام
             </button>
           </div>
         </div>
@@ -94,7 +91,7 @@ const RegistrationForm = () => {
           
           {/* Row 1: Names */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">First Name</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">ناوی یەکەم</label>
             <div className="relative">
               <input 
                 type="text" 
@@ -105,7 +102,7 @@ const RegistrationForm = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">Last Name</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">ناوی دووەم</label>
             <div className="relative">
               <input 
                 type="text" 
@@ -117,7 +114,7 @@ const RegistrationForm = () => {
 
           {/* Row 2: Contact Info */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">Email Address</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">ئیمەیڵ</label>
             <div className="relative group">
               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
@@ -129,7 +126,7 @@ const RegistrationForm = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">Phone Number</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">ژمارەی مۆبایل</label>
             <div className="relative group">
               <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
@@ -143,19 +140,19 @@ const RegistrationForm = () => {
           {/* CONDITIONAL FIELD: Profession (Only for Workers) */}
           {role === 'worker' && (
             <div className="md:col-span-2 space-y-2 animate-fadeIn">
-              <label className="text-sm font-bold text-slate-900 ml-1">Profession</label>
+              <label className="text-sm font-bold text-slate-900 ml-1">پیشە</label>
               <div className="relative group">
                 <Hammer className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                 <select 
                   className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-12 appearance-none focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium transition-all outline-none cursor-pointer"
                   defaultValue=""
                 >
-                  <option value="" disabled className="text-slate-400">Select your profession</option>
-                  <option value="plumber">Plumber</option>
-                  <option value="electrician">Electrician</option>
-                  <option value="carpenter">Carpenter</option>
-                  <option value="mechanic">Mechanic</option>
-                  <option value="painter">Painter</option>
+                  <option value="" disabled className="text-slate-400">پیشەکەت هەڵبژێرە</option>
+                  <option value="plumber">بۆڕیچی</option>
+                  <option value="electrician">کارەباچی</option>
+                  <option value="carpenter">فەرششۆر</option>
+                  <option value="mechanic">مێکانیک</option>
+                  <option value="painter">بۆیاغچی</option>
                 </select>
                 <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
               </div>
@@ -164,12 +161,12 @@ const RegistrationForm = () => {
 
           {/* Row 3: Security */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">Password</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">پاسوۆرد</label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type={showPassword ? "text" : "password"}
-                placeholder="Create a password" 
+                placeholder="پاسوۆردێك دروست بکە" 
                 className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-12 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none"
               />
               <button 
@@ -183,12 +180,12 @@ const RegistrationForm = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 ml-1">Confirm Password</label>
+            <label className="text-sm font-bold text-slate-900 ml-1">دڵنیاکردنەوەی پاسوۆرد</label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type="password" 
-                placeholder="Confirm your password" 
+                placeholder="دڵنیاکردنەوەی پاسوۆرد" 
                 className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-12 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none"
               />
               <button 
@@ -201,16 +198,16 @@ const RegistrationForm = () => {
           </div>
 
           {/* Row 4: Action Area */}
-          <div className="md:col-span-2 mt-4 flex flex-col items-center gap-6">
+          <div dir='ltr' className="md:col-span-2 mt-4 flex flex-col items-center gap-6">
             <button className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 font-bold py-4 rounded-2xl transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2">
-              Create Account
+              دروستکردنی ئەکاونت
               <ArrowRight size={20} />
             </button>
             
             <p className="text-slate-500 font-medium">
-              Already have an account?{' '}
-              <Link to="/login" className="text-blue-500 font-bold hover:text-blue-600 hover:underline">
-                Sign in
+            ئەکاونتت هەیە؟{' '}
+              <Link to="/loginK" className="text-blue-500 font-bold hover:text-blue-600 hover:underline">
+                چوونە ژوورەوە
               </Link>
             </p>
           </div>

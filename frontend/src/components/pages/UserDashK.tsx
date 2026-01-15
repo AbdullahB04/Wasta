@@ -10,9 +10,8 @@ import { useToast } from "../hooks/use-toast";
 import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
 
-
-const UserDashboard = () => {
-  usePageTitle("User Dashboard");
+const UserDashboardK = () => {
+  usePageTitle("پڕۆفایلی بەکارهێنەر");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -20,11 +19,11 @@ const UserDashboard = () => {
     firstName: "John",
     lastName: "Doe",
     phoneNumber: "+964 750 123 4567",
-    location: "Erbil",
+    location: "هەولێر",
     profileImage: ""
   });
 
-  const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
+  const availableLocations = ["هەولێر", "دهۆک", "سلێمانی", "کەرکوک", "هەڵەبجە"];
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -49,7 +48,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 relative overflow-hidden">
+    <div dir="rtl" className="all min-h-screen bg-slate-50/50 relative overflow-hidden font-nrt">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-96 bg-blue-100/50 blur-[120px] -z-10 rounded-full pointer-events-none" />
@@ -60,14 +59,13 @@ const UserDashboard = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/K')}
             className="hover:bg-slate-100 rounded-full text-slate-500 hover:text-slate-900"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">My Profile</h1>
-            <p className="text-xs text-slate-500 font-medium">Manage your account details</p>
+            <h1 className="text-xl font-bold text-slate-900">پڕۆفایلەکەم</h1>
           </div>
         </div>
       </header>
@@ -117,7 +115,6 @@ const UserDashboard = () => {
                 </div>
                 <div className="mt-4 text-center">
                     <h2 className="text-2xl font-bold text-slate-900">{formData.firstName} {formData.lastName}</h2>
-                    <p className="text-slate-500 text-sm">Update your photo and personal details</p>
                 </div>
               </div>
 
@@ -126,7 +123,7 @@ const UserDashboard = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-slate-700 font-semibold">First Name</Label>
+                    <Label htmlFor="firstName" className="text-slate-700 font-semibold">ناوی یەکەم</Label>
                     <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
@@ -140,7 +137,7 @@ const UserDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-slate-700 font-semibold">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-slate-700 font-semibold">ناوی دووەم</Label>
                     <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
@@ -155,7 +152,7 @@ const UserDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-slate-700 font-semibold">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-slate-700 font-semibold">ژمارەی مۆبایل</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
@@ -170,7 +167,7 @@ const UserDashboard = () => {
 
                 {/* Location Select Dropdown */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-slate-700 font-semibold">Location</Label>
+                  <Label htmlFor="location" className="text-slate-700 font-semibold">شوێن</Label>
                   <div className="relative">
                     <select 
                       name="location" 
@@ -179,7 +176,7 @@ const UserDashboard = () => {
                       onChange={(e) => handleInputChange("location", e.target.value)}
                       className="w-full pl-10 pr-4 h-12 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-slate-50/50 focus:bg-white transition-colors"
                     >
-                      <option value="" disabled>Select your location</option>
+                      <option value="" disabled>شوێنەکەت هەڵبژێرە</option>
                       {availableLocations.map((loc) => (
                         <option key={loc} value={loc}>
                           {loc}
@@ -196,7 +193,7 @@ const UserDashboard = () => {
                         className="w-full h-12 text-base gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all"
                     >
                     <Save className="h-5 w-5" />
-                    Save Changes
+                    هەڵگرتنی گۆڕانکاریەکان
                     </Button>
                 </div>
               </div>
@@ -208,4 +205,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default UserDashboardK;

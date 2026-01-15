@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { Search, MapPin, Star, Filter, SlidersHorizontal } from 'lucide-react';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
 import { Link } from 'react-router-dom';
-import Footer from '../ui/Footer';
-import BasicModal from '../ui/Animated-modal';
+import BasicModal from '../ui/Animated-modalK';
 import Avatar from '@mui/material/Avatar';
+import FooterK from '../ui/FooterK';
 import { usePageTitle } from '../hooks/usePageTitle';
 
-const Worker = () => {
-  usePageTitle('Workers');
 
+
+const Worker = () => {
+  usePageTitle('وەستاکان');
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
@@ -22,37 +23,39 @@ const Worker = () => {
   ];
 
   const categories = [
-    { value: "all", label: "All Categories" },
-    { value: "plumber", label: "Plumbing" },
-    { value: "electrician", label: "Electrical" },
-    { value: "carpenter", label: "Carpentry" },
-    { value: "cleaner", label: "Cleaning" },
+    { value: "all", label: "هەموو بەشەکان" },
+    { value: "plumber", label: "بۆڕیچی" },
+    { value: "electrician", label: "کارەباچی" },
+    { value: "carpenter", label: "فەرششۆر" },
+    { value: "cleaner", label: "پاککەرەوە" },
   ];
 
-  const navItems = [
-    { name: 'Home', link: '/' },
-    { name: 'Workers', link: '/worker' },
-    { name: 'Categories', link: '/category' }
-  ];
+    const navItems = [
+    {
+        name: 'سەرەکی',
+        link: '/K',
+    },
+    {
+        name: 'وەستاکان',
+        link: '/workerK'
+    },
+    {
+        name: 'بەشەکان',
+        link: '/categoryK'
+    }
+  ]
 
   return (
-    <div dir='ltr' className="min-h-screen bg-slate-50/50">
-      
-      {/* Navbar Wrapper */}
-      <div className="bg-white border-b border-slate-100">
-        <NavBody>
-          <NavbarLogo />
-          <NavItems items={navItems} />
+    <div dir='rtl' className="font-nrt min-h-screen bg-slate-50/50">
+
+    <NavBody>
+      <NavbarLogo />
+        <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
-            <Link to="/Login">
-              <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 transition-all'>
-                Sign in
-              </NavbarButton>
-            </Link>
+            {/* <NavbarButton variant="secondary">Login</NavbarButton> */}
+            <Link to="/LoginK"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>چوونە ژوورەوە</NavbarButton></Link>
           </div>
-        </NavBody>
-      </div>
+    </NavBody>
 
       {/* Page Header & Search Section */}
       <section className="relative pt-16 pb-12 px-6">
@@ -61,10 +64,10 @@ const Worker = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Expert</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">وەستاکەت</span> بدۆزەوە
             </h1>
             <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-              Browse top-rated professionals in your area tailored to your specific needs.
+              بەدوای باشترین وەستاکانی ناوچەکەتدا بگەڕێ کە بەپێی پێداویستییەکانت.
             </p>
           </div>
 
@@ -74,7 +77,7 @@ const Worker = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search by name, skill, or profession..."
+                placeholder="گەڕان بە پێی ناو و لێهاتوویی ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 bg-transparent rounded-xl focus:bg-slate-50 focus:outline-none text-slate-900 placeholder:text-slate-400 transition-colors"
@@ -102,8 +105,8 @@ const Worker = () => {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full pl-10 pr-8 py-3.5 bg-slate-50 hover:bg-slate-100 border border-transparent rounded-xl text-slate-700 text-sm font-semibold focus:outline-none appearance-none cursor-pointer transition-colors"
                 >
-                  <option value="rating">Highest Rated</option>
-                  <option value="distance">Nearest First</option>
+                  <option value="rating">باشترین هەڵسەنگاندن</option>
+                  <option value="distance">نزیكترین</option>
                 </select>
               </div>
             </div>
@@ -147,7 +150,7 @@ const Worker = () => {
                 ))}
                 </div>
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                  <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mb-4">Phone :</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mb-4">مۆبایل :</span>
                   {/* <span> retrieve from DB</span> */}
                 </div>
 
@@ -159,11 +162,7 @@ const Worker = () => {
                 </div>
                 
                 <div className="shrink-0">
-                  <BasicModal >
-                    <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
-                      View Profile
-                    </button>
-                  </BasicModal>
+                  <BasicModal buttonText="بینینی پڕۆفایل" />
                 </div>
               </div>
 
@@ -173,7 +172,7 @@ const Worker = () => {
 
       </section>
       
-      <Footer />
+      <FooterK />
     </div>
   );
 };

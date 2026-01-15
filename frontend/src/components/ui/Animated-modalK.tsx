@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { X } from 'lucide-react';
-import ProfileCard from '../pages/WorkerPro';
+import ProfileCard from '../pages/WorkerProK';
 
 interface BasicModalProps {
   buttonText?: string;

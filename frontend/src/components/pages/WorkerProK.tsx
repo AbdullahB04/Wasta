@@ -4,8 +4,9 @@ import { LiaTelegramPlane } from "react-icons/lia";
 import { usePageTitle } from '../hooks/usePageTitle';
 
 
-const WorkerProfileModal = () => {
-  usePageTitle('Worker Profile');
+const WorkerProfileModalK = () => {
+  usePageTitle('پڕۆفایلی وەستا');
+  
   // State for feedback modal
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState(0);
@@ -23,7 +24,7 @@ const WorkerProfileModal = () => {
 
   return (
     // Main Container with scrolling fix
-    <div dir='ltr' className="flex flex-col h-full max-h-[80vh] overflow-y-auto px-2 pb-2 scrollbar-hide">
+    <div dir='rtl' className="flex flex-col h-full max-h-[80vh] overflow-y-auto px-2 pb-2 scrollbar-hide">
       
       <div className="p-4 sm:p-6">
         
@@ -38,7 +39,7 @@ const WorkerProfileModal = () => {
             </div>
 
             {/* Name & Rating Info */}
-            <div className="flex-1 space-y-2 pt-2 text-center sm:text-left">
+            <div className="flex-1 space-y-2 pt-2 text-center sm:text-right">
                 <div>
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Kamal</h2>
                     <p className="text-lg text-blue-600 font-medium">Plumber</p>
@@ -60,8 +61,8 @@ const WorkerProfileModal = () => {
                     <MapPin className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Location</p>
-                    <p className="text-sm font-semibold text-slate-700 truncate">Erbil, Kurdistan</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">شوێن</p>
+                    <p className="text-sm font-semibold text-slate-700 truncate">هەولێر</p>
                 </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -69,25 +70,24 @@ const WorkerProfileModal = () => {
                     <Clock className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Availability</p>
-                    <p className="text-sm font-semibold text-green-600 truncate">Available Today</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">دۆخی کار</p>
+                    <p className="text-sm font-semibold text-green-600 truncate">چالاك</p>
                 </div>
             </div>
         </div>
 
         {/* 3. Bio Text */}
         <div className="mb-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide">About</h3>
+            <h3 className="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide">دەربارە</h3>
             <p className="text-slate-500 text-sm leading-relaxed">
-                Specializing in residential and commercial plumbing with over 10 years of experience. 
-                I handle emergency repairs, new installations, and routine maintenance with a focus on quality.
+                من كامال، پێشەسازی پڕۆفیشنال لە هەولێر. من زیاتر لە ١٠ ساڵ تەجڕبەی كار كردن لە ناوچەی پێشەسازی هەیە و خزمەتگوزارییەكانم بە كیفایەت و بەخێرایی پێشنیار دەكات. من تایبەت بە چارەسەر كردنی كێشەكانی پێپ و دۆزینەوەی شكاندن و دانانی سیستەمە نوێكانم.
             </p>
         </div>
 
         {/* 4. Skills & Languages */}
         <div className="space-y-4 mb-6 border-t border-slate-100 pt-6">
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Skills:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">لێهاتووییەکان:</span>
                 <div className="flex flex-wrap gap-2">
                     {['Pipe Repair', 'Installation', 'Leak Detection', 'Maintenance'].map(skill => (
                     <span key={skill} className="px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
@@ -97,7 +97,7 @@ const WorkerProfileModal = () => {
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Languages:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">زمانەکان:</span>
                 <div className="flex flex-wrap gap-2">
                     {['English', 'Kurdish', 'Arabic'].map(lang => (
                     <span key={lang} className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
@@ -107,7 +107,7 @@ const WorkerProfileModal = () => {
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Phone NO:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">ژمارەی مۆبایل:</span>
                 {/* <span> retrieve from DB</span> */}
             </div>
         </div>
@@ -121,18 +121,18 @@ const WorkerProfileModal = () => {
               className="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg shadow-slate-300 transition-all active:scale-95"
             >
               <MessageSquare className="w-6 h-6" />
-              Leave Feedback
+              هەڵسەنگاندن
             </button>
 
             {/* WhatsApp & Telegram Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg shadow-green-200 transition-all active:scale-95">
                   <MessageCircle className="w-6 h-6" />
-                  WhatsApp
+                  واتسئاپ
               </button>
               <button className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg shadow-blue-200 transition-all active:scale-95">
                   <LiaTelegramPlane className="w-7 h-7" />
-                  Telegram
+                  تیلیگرام
               </button>
             </div>
         </div>
@@ -146,17 +146,17 @@ const WorkerProfileModal = () => {
             {/* Close Button */}
             <button
               onClick={() => setIsFeedbackOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute top-4 left-4 text-slate-400 hover:text-slate-600 transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
 
             {/* Modal Header */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Leave Your Feedback</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">هەڵسەنگاندن</h2>
 
             {/* Rating Section */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-700 mb-3">Your Rating</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-3">هەڵسەنگاندنەکەت</label>
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -177,17 +177,17 @@ const WorkerProfileModal = () => {
                 ))}
               </div>
               {feedbackRating > 0 && (
-                <p className="text-sm text-amber-600 font-medium mt-2">{feedbackRating} out of 5 stars</p>
+                <p className="text-sm text-amber-600 font-medium mt-2">{feedbackRating} لە ٥ هەڵسەنگاندن</p>
               )}
             </div>
 
             {/* Comment Section */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Additional Comments (Optional)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">زانیاری زیاتر </label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Share your experience..."
+                placeholder="ڕات لێرە بنوسە..."
                 className="w-full h-32 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
               />
             </div>
@@ -198,7 +198,7 @@ const WorkerProfileModal = () => {
               disabled={feedbackRating === 0}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-all active:scale-95"
             >
-              Submit Feedback
+                ناردن
             </button>
           </div>
         </div>
@@ -207,4 +207,4 @@ const WorkerProfileModal = () => {
   );
 };
 
-export default WorkerProfileModal;
+export default WorkerProfileModalK;

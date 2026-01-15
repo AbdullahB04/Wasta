@@ -5,34 +5,11 @@ import { GrMapLocation } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { ArrowLeft } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
+import FooterK from '../ui/FooterK';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-// --- Utility Helper ---
-// A simple version of the 'cn' utility often used in these projects
-function cn(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
-// --- Mock Components for Navbar & Footer ---
-// (These are placeholders since the original files were not provided)
-const NavbarLogo = () => <div className="font-bold text-2xl text-slate-900">WASTA</div>;
-const NavBody = ({ children }: { children: React.ReactNode }) => <nav className="flex justify-between items-center p-6 container mx-auto">{children}</nav>;
-const NavItems = ({ items }: { items: any[] }) => (
-  <ul className="hidden md:flex gap-8">
-    {items.map((item, idx) => (
-      <li key={idx}><Link to={item.link} className="text-slate-600 hover:text-blue-600 font-medium transition-colors">{item.name}</Link></li>
-    ))}
-  </ul>
-);
-const NavbarButton = ({ children, variant, className }: any) => (
-  <button className={cn("px-4 py-2 rounded-lg font-medium transition-all", variant === 'secondary' ? "text-slate-600 hover:bg-slate-50" : "", className)}>
-    {children}
-  </button>
-);
-const Footer = () => (
-  <footer className="bg-slate-50 py-10 border-t border-slate-200 mt-20 text-center text-slate-500">
-    <p>© 2026 WASTA. All rights reserved.</p>
-  </footer>
-);
 
 // --- Component: Hero ---
 const Hero: React.FC = () => {
@@ -69,22 +46,22 @@ const Hero: React.FC = () => {
                <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 دۆزینەوەی باشترین <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                  وەستا و کرێکاری ناوچەیی
+                  وەستا و کرێکاری ناوەخۆیی
                 </span>
                 <span className="text-slate-900"> لە نزیک تۆ</span>
               </h1>
               <p className="text-lg text-slate-500 max-w-md leading-relaxed ml-auto">
-                پەیوەندی بکە بە پیشەگەرە شارەزاکان بۆ هەموو پێداویستییەکانی ماڵ و کار. یارمەتی دڵنیایی، تەنها بە یەک کلیک.
+                پەیوەندی بکە بە وەستا شارەزاکان بۆ هەموو پێداویستییەکانی ماڵ و کار.
               </p>
             </div>
 
             {/* Buttons */}
-            <div className="flex items-center justify-end gap-4 pt-2">
-              <Link to="/register?role=worker" className="px-6 py-3 text-slate-600 rounded-xl font-semibold border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all text-sm">
-                 تۆمارکردن وەک وەستا
+            <div className="flex items-center justify-start gap-4 pt-2">
+              <Link to="/registerK" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all text-sm shadow-md">
+                خۆ تۆمارکردن وەک بەکارهێنەر
               </Link>
-              <Link to="/register" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all text-sm shadow-md">
-                تۆمارکردن وەک بەکارهێنەر
+              <Link to="/registerK?role=worker" className="px-6 py-3 text-slate-600 rounded-xl font-semibold border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all text-sm">
+                 خۆ تۆمارکردن وەک وەستا
               </Link>
             </div>
           </motion.div>
@@ -249,32 +226,31 @@ const CallToAction = () => {
             </h2>
 
             <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-              بچۆرە ڕیزی هەزاران بەکارهێنەری ڕازی و پیشەگەری شارەزا. ئەمڕۆ تۆمار بکە بۆ ئەزموونکردنی پەیوەندی خزمەتگوزاری بێ کێشە.
+              بچۆرە ڕیزی هەزاران بەکارهێنەر و وەستای شارەزا. ئەمڕۆ خۆت تۆمار بکە بۆ بەدەستخستنی خزمەتگوزاری بێ کێشە.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-              
-              {/* Primary Button */}
-              <Link to="/worker">
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
-              >
-                ئەمڕۆ دەست بکە بە دامەزراندن
-                {/* ArrowLeft is used for RTL "Forward" motion */}
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              </motion.button>
-              </Link>
-
               {/* Secondary Button */}
-              <Link to="/register?role=worker">
+              <Link to="/registerK?role=worker">
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-100 text-slate-600 font-bold rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all"
               >
-                ببە بە پێشکەشکاری خزمەتگوزاری
+                خۆت تۆماربکە
+              </motion.button>
+              </Link>
+
+              {/* Primary Button */}
+              <Link to="/workerK">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+              >
+                وەستاکان ببینە
+                {/* ArrowLeft is used for RTL "Forward" motion */}
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               </motion.button>
               </Link>
 
@@ -290,7 +266,7 @@ const CallToAction = () => {
 const content = [
   {
     title: 'گەڕان بەپێی شوێن',
-    description: 'بە ئاسانی پیشەگەرە شارەزاکان لە ناوچەکەت بدۆزەرەوە بۆ هەر کارێک، گەورە یان بچووک.',
+    description: 'بە ئاسانی وەستا شارەزاکان لە ناوچەکەت بدۆزەرەوە بۆ هەر کارێک، گەورە یان بچووک.',
     content: (
       <div>
         <GrMapLocation size={150} className="text-sky-400 mx-auto mt-6" />
@@ -307,7 +283,7 @@ const content = [
     ),
   },
   {
-    title: 'چەت و بەکرێگرتن',
+    title: 'ڕێککەوتن و بەکرێگرتن',
     description: 'ڕاستەوخۆ قسە لەگەڵ وەستاکان بکە بۆ باسکردنی پێداویستییەکانت و بە متمانەوە دایانبمەزرێنە.',
     content: (
       <div>
@@ -318,35 +294,33 @@ const content = [
 ]
 
 const Home = () => {
-  const navItems = [
+    usePageTitle('سەرەکی')
+  
+
+    const navItems = [
     {
-      name: 'سەرەکی',
-      link: '/',
+        name: 'سەرەکی',
+        link: '/K',
     },
     {
-      name: 'وەستاکان',
-      link: '/worker'
+        name: 'وەستاکان',
+        link: '/workerK'
     },
     {
-      name: 'بەشەکان',
-      link: '/category'
+        name: 'بەشەکان',
+        link: '/categoryK'
     }
   ]
 
   return (
-  <div dir="rtl" className="font-[Vazirmatn] bg-white min-h-screen text-slate-900"> 
-    {/* Explicitly adding Vazirmatn font family, ensure you import it in your CSS */}
-    <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
-        .font-[Vazirmatn] { font-family: 'Vazirmatn', sans-serif; }
-    `}</style>
+  <div dir="rtl" className="font-nrt bg-white min-h-screen text-slate-900"> 
 
     <NavBody>
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">چوونەژوورەوە</NavbarButton>
-            <Link to="/Login"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>خۆت تۆمار بکە</NavbarButton></Link>
+            {/* <NavbarButton variant="secondary">Login</NavbarButton> */}
+            <Link to="/LoginK"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>چوونە ژوورەوە</NavbarButton></Link>
           </div>
     </NavBody>
     <section id='hero'>
@@ -358,7 +332,7 @@ const Home = () => {
     <section id='call-to-action'>
       <CallToAction />
     </section>
-    <Footer />
+    <FooterK />
   </div>
   )
 }

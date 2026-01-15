@@ -4,18 +4,20 @@ import SpotlightCard from "../ui/SpotlightCard"; // Keeping your component
 import { Link } from 'react-router-dom';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
 import Footer from '../ui/Footer';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 
 const Category = () => {
+  usePageTitle('Categories');
   
   // Example data to make the grid look real
   const categories = [
-    { name: "Plumbing", icon: <Wrench className="w-10 h-10 text-blue-500" />, count: "120+ Pros" },
-    { name: "Electrical", icon: <Zap className="w-10 h-10 text-blue-500" />, count: "85+ Pros" },
-    { name: "Painting", icon: <PaintBucket className="w-10 h-10 text-blue-500" />, count: "64+ Pros" },
-    { name: "Moving", icon: <Truck className="w-10 h-10 text-blue-500" />, count: "40+ Pros" },
-    { name: "Cleaning", icon: <Home className="w-10 h-10 text-blue-500" />, count: "200+ Pros" },
-    { name: "Landscaping", icon: <Search className="w-10 h-10 text-blue-500" />, count: "50+ Pros" },
+    { name: "Plumbing", icon: <Wrench className="w-10 h-10 text-blue-500" />,  },
+    { name: "Electrical", icon: <Zap className="w-10 h-10 text-blue-500" />,  },
+    { name: "Painting", icon: <PaintBucket className="w-10 h-10 text-blue-500" />,  },
+    { name: "Moving", icon: <Truck className="w-10 h-10 text-blue-500" />,  },
+    { name: "Cleaning", icon: <Home className="w-10 h-10 text-blue-500" />,  },
+    { name: "Landscaping", icon: <Search className="w-10 h-10 text-blue-500" />,  },
   ];
     const navItems = [
     {
@@ -33,7 +35,12 @@ const Category = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div dir='ltr' className=" font-[Vazirmatn] min-h-screen bg-white">
+          <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
+        .font-[Vazirmatn] { font-family: 'Vazirmatn', sans-serif; }
+    `}</style>
+
           <NavBody>
       <NavbarLogo />
         <NavItems items={navItems} />
@@ -99,7 +106,7 @@ const Category = () => {
                     {cat.icon}
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{cat.name}</h3>
-                  <p className="text-slate-400 font-medium mb-6">{cat.count}</p>
+                  {/* <p className="text-slate-400 font-medium mb-6">{cat.count}</p> */}
                   
                   <span className="text-blue-600 font-semibold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
                     View Professionals <ArrowRight className="w-4 h-4" />
