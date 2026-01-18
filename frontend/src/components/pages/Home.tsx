@@ -8,6 +8,7 @@ import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
 import {Link} from 'react-router-dom';
 import Footer from '../ui/Footer';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../../contexts/AuthContext';
 
 const content = [
   {
@@ -44,6 +45,7 @@ const content = [
 
 const Home = () => {
   usePageTitle('Home')
+  const { dbUser, loading } = useAuth();
 
   const navItems = [
     {
@@ -60,14 +62,34 @@ const Home = () => {
     }
   ]
 
+  const getDashboardLink = () => {
+    if (!dbUser) return '/Login';
+    return dbUser.role === 'WORKER' ? '/worker/dashboard' : '/user/dashboard';
+  };
+
   return (
   <div dir='ltr'>
     <NavBody>
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            {/* <NavbarButton variant="secondary">Login</NavbarButton> */}
-            <Link to="/Login"><NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>Sign in</NavbarButton></Link>
+            {dbUser ? (
+              <Link to={getDashboardLink()}>
+                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
+                  {dbUser.role === 'WORKER' ? (
+                    `${dbUser.firstName}'s Worker Dashboard`
+                  ) : (
+                    `${dbUser.firstName}'s Dashboard`
+                  )}
+                </NavbarButton>
+              </Link>
+            ) : (
+              <Link to="/Login">
+                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
+                  Sign in
+                </NavbarButton>
+              </Link>
+            )}
           </div>
     </NavBody>
     <section id='hero'>

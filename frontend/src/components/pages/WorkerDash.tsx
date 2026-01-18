@@ -6,14 +6,22 @@ import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, MapPin, Camera } from "lucide-react";
-import { Link } from "react-router-dom";
+import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, MapPin, Camera, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../../contexts/AuthContext';
+import { auth } from '../../config/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from "../hooks/use-toast";
 
 
 const WorkerDashboard = () => {
   usePageTitle("Worker Dashboard");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+
   const [formData, setFormData] = useState({
     firstName: "Ahmed",
     lastName: "Hassan",
@@ -81,6 +89,27 @@ const WorkerDashboard = () => {
 
   const handleSave = () => {
     console.log("Saving profile:", { formData, languages, skills, isActive });
+    toast({
+      title: "Profile Updated",
+      description: "Your changes have been saved successfully.",
+    });
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Get initials from first and last name
@@ -362,11 +391,25 @@ const WorkerDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Save Button */}
-            <div className="flex justify-end pt-4">
-               <Button onClick={handleSave} size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-95">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+               <Button 
+                 onClick={handleSave} 
+                 size="lg" 
+                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-95"
+               >
                  <Save className="h-4 w-4 mr-2" />
                  Save Changes
+               </Button>
+               
+               <Button 
+                 onClick={handleSignOut}
+                 size="lg"
+                 variant="outline"
+                 className="flex-1 sm:flex-initial border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all active:scale-95"
+               >
+                 <LogOut className="h-4 w-4 mr-2" />
+                 Sign Out
                </Button>
             </div>
             

@@ -4,17 +4,20 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowLeft, Camera, Save, User, Phone } from "lucide-react";
+import { ArrowLeft, Camera, Save, User, Phone, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
-
+import { useAuth } from '../../contexts/AuthContext';
+import { auth } from '../../config/firebase';
+import { signOut } from 'firebase/auth';
 
 const UserDashboard = () => {
   usePageTitle("User Dashboard");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { dbUser } = useAuth();
 
   const [formData, setFormData] = useState({
     firstName: "John",
@@ -48,8 +51,25 @@ const UserDashboard = () => {
     });
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50/50 relative overflow-hidden">
+    <div dir="ltr" className="min-h-screen bg-slate-50/50 relative overflow-hidden">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-96 bg-blue-100/50 blur-[120px] -z-10 rounded-full pointer-events-none" />
@@ -189,14 +209,23 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* 4. Action Button */}
-                <div className="pt-4">
+                {/* 4. Action Buttons */}
+                <div className="pt-4 space-y-3">
                     <Button 
                         onClick={handleSave} 
                         className="w-full h-12 text-base gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all"
                     >
-                    <Save className="h-5 w-5" />
-                    Save Changes
+                      <Save className="h-5 w-5" />
+                      Save Changes
+                    </Button>
+                    
+                    <Button 
+                        onClick={handleSignOut} 
+                        variant="outline"
+                        className="w-full h-12 text-base gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 rounded-xl active:scale-95 transition-all"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Sign Out
                     </Button>
                 </div>
               </div>

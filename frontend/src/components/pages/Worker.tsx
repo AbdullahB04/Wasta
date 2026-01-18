@@ -6,9 +6,12 @@ import Footer from '../ui/Footer';
 import BasicModal from '../ui/Animated-modal';
 import Avatar from '@mui/material/Avatar';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Worker = () => {
   usePageTitle('Workers');
+    const { dbUser } = useAuth();
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -35,23 +38,39 @@ const Worker = () => {
     { name: 'Categories', link: '/category' }
   ];
 
+    const getDashboardLink = () => {
+    if (!dbUser) return '/Login';
+    return dbUser.role === 'WORKER' ? '/worker/dashboard' : '/user/dashboard';
+  };
+
   return (
     <div dir='ltr' className="min-h-screen bg-slate-50/50">
-      
+
       {/* Navbar Wrapper */}
       <div className="bg-white border-b border-slate-100">
-        <NavBody>
-          <NavbarLogo />
-          <NavItems items={navItems} />
+    <NavBody>
+      <NavbarLogo />
+        <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
-            <Link to="/Login">
-              <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 transition-all'>
-                Sign in
-              </NavbarButton>
-            </Link>
+            {dbUser ? (
+              <Link to={getDashboardLink()}>
+                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
+                  {dbUser.role === 'WORKER' ? (
+                    `${dbUser.firstName}'s Worker Dashboard`
+                  ) : (
+                    `${dbUser.firstName}'s Dashboard`
+                  )}
+                </NavbarButton>
+              </Link>
+            ) : (
+              <Link to="/Login">
+                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
+                  Sign in
+                </NavbarButton>
+              </Link>
+            )}
           </div>
-        </NavBody>
+    </NavBody>
       </div>
 
       {/* Page Header & Search Section */}

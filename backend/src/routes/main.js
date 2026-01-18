@@ -4,19 +4,34 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// HOME PAGE ROUTE - Get stats for landing page
+// 1. GET ALL SERVICES (For the dropdown menu)
+router.get('/services', async (req, res) => {
+  try {
+    const services = await prisma.service.findMany({
+      orderBy: { name: 'asc' },
+      select: {
+        id: true,
+        name: true
+      }
+    });
+    res.json(services);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch services" });
+  }
+});
+
+// 2. HOME PAGE STATS
 router.get('/', async (req, res) => {
     try {
-        // Get counts from database
         const totalUsers = await prisma.user.count();
         const totalWorkers = await prisma.worker.count();
             
         res.json({
             success: true,
             data: {
-            totalClients: totalUsers,
-            totalWorkers: totalWorkers,
-            message: 'Welcome to our service platform!'
+                totalClients: totalUsers,
+                totalWorkers: totalWorkers,
+                message: 'Welcome to our service platform!'
             }
         })
     } catch (error) {
@@ -28,34 +43,41 @@ router.get('/', async (req, res) => {
     }
 })
 
-// BROWSE WORKERS ROUTE - List all workers with basic info
+// 3. BROWSE WORKERS (With correct filtering)
 router.get('/browse', async (req,res) => {
     const { search, address } = req.query
     const category = req.query.category || null;
+    
     const where = {}
-    if (search && search.length > 0 && search.trim() !== '') {
+    
+    // Search by Name
+    if (search && search.trim() !== '') {
         where.OR = [
-            {  firstName: { contains: search.trim(), mode: 'insensitive' } },
-            {  lastName: { contains: search.trim(), mode: 'insensitive' } },
+            { firstName: { contains: search.trim(), mode: 'insensitive' } },
+            { lastName: { contains: search.trim(), mode: 'insensitive' } },
         ]
     }
-    if (address && address.length > 0 && address.trim() !== '') {
+    
+    // Search by Address
+    if (address && address.trim() !== '') {
         where.address = { contains: address.trim(), mode: 'insensitive' }
     }
-    if (category && category.length > 0 && category.trim() !== '') {
-        where.services = {
+
+    // Search by Category (FIXED: Uses WorkerService)
+    if (category && category.trim() !== '') {
+        where.WorkerService = {
             some: {
-            service: {
-                name: { contains: category, mode: 'insensitive' }
-            }
+                service: {
+                    name: { contains: category, mode: 'insensitive' }
+                }
             }
         };
-        }
+    }
 
     try {
-    const workers = await prisma.worker.findMany({
-        where,
-        select: {
+        const workers = await prisma.worker.findMany({
+            where,
+            select: {
                 id: true,
                 firstName: true,
                 lastName: true,
@@ -63,6 +85,14 @@ router.get('/browse', async (req,res) => {
                 phone: true,
                 address: true,
                 bio: true,
+                // Include the service names in the list so you can display tags like "Plumber"
+                WorkerService: {
+                    select: {
+                        service: {
+                            select: { name: true }
+                        }
+                    }
+                }
             }
         })
 
@@ -83,7 +113,7 @@ router.get('/browse', async (req,res) => {
     }
 })
 
-// WORKER DETAIL ROUTE - Get detailed info for a specific worker
+// 4. WORKER DETAIL (With correct relationship inclusion)
 router.get("/worker/:id", async (req,res) => {
     const { id } = req.params;
 
@@ -97,14 +127,15 @@ router.get("/worker/:id", async (req,res) => {
                 phone: true,
                 address: true,
                 bio: true,
-
-                services: {
+                
+                // FIXED: Uses WorkerService
+                WorkerService: {
                     include: {
                         service: {
                             select: {
                                 id: true,
                                 name: true,
-                                description: true
+                                // description: true // Uncomment if your schema has this
                             }
                         }
                     }
@@ -121,9 +152,7 @@ router.get("/worker/:id", async (req,res) => {
 
         res.json({
             success: true,
-            data: {
-                worker
-            }
+            data: { worker }
         });
 
     } catch (error) {
@@ -135,14 +164,14 @@ router.get("/worker/:id", async (req,res) => {
     }
 })
 
-// CATEGORIES ROUTE - List all service categories
+// 5. CATEGORIES LIST
 router.get('/categories', async (req, res) => {
     try {
         const categories = await prisma.service.findMany({
             select: {
                 id: true,
                 name: true,
-                description: true
+                // description: true
             }
         });
 
@@ -160,10 +189,6 @@ router.get('/categories', async (req, res) => {
             error: 'Failed to load categories data'
         });
     }
-})
-
-router.get('/how-it-works', (req, res) => {
-    res.json('This route will explain how the service works.');
 })
 
 export default router;

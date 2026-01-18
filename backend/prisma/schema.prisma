@@ -10,36 +10,37 @@ datasource db {
 // Let's start with just 2 basic tables to understand
 model User {
   id        String   @id @default(cuid())
+  firebaseUid String   @unique
   email     String   @unique
+  password  String
   firstName String
   lastName  String
   phone     String?
   address   String?
   role      String   @default("USER")
   createdAt DateTime @default(now())
-  
-  @@map("users")
+  @@map("users") 
 }
-
 model Worker {
   id        String   @id @default(cuid())
+  firebaseUid String   @unique
   email     String   @unique
+  password  String
   firstName String
   lastName  String
   phone     String
   address   String
+  position  String
   bio       String?
   role      String   @default("WORKER")
   createdAt DateTime @default(now())
-  
   @@map("workers")
   WorkerService WorkerService[]
 }
 
 model Service {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) 
   name        String
-  description String?
   createdAt   DateTime @default(now())
   
   @@map("services")
