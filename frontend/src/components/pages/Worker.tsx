@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, MapPin, Star, Filter, SlidersHorizontal } from 'lucide-react';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
 import { Link } from 'react-router-dom';
@@ -8,29 +8,62 @@ import Avatar from '@mui/material/Avatar';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 
+interface WorkerType {
+  id: number;
+  firstName: string;
+  lastName: string;
+  position?: string;
+  image?: string;
+  phone: string;
+  address: string;
+}
+
 const Worker = () => {
   usePageTitle('Workers');
     const { dbUser } = useAuth();
 
-
+  const [workers, setWorkers] = useState<WorkerType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
 
-  const workers = [
-    { id: 1, name: "Ahmed Hassan", location: "Erbil, Kurdistan", rating: 4.8, reviews: 124, tags: ["Plumbing", "Repair"], image: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&q=80&w=200"},
-    { id: 2, name: "Sarah Jameel", location: "Sulaymaniyah", rating: 5.0, reviews: 89, tags: ["Design", "Decor"], image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200"},
-    { id: 3, name: "Karim Ali", location: "Duhok", rating: 4.5, reviews: 56, tags: ["Wiring", "Install"], image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"},
-    { id: 4, name: "John Doe", location: "Erbil", rating: 4.2, reviews: 30, tags: ["Repair", "Maintenance"], image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200"},
-  ];
+  useEffect(() => {
+    const fetchWorkers = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/workers'); // Changed from /api/workers
+        const data = await response.json();
+        setWorkers(data);
+      } catch (error) {
+        console.error('Error fetching workers:', error);
+      }
+    };
+    
+    fetchWorkers();
+  }, []);
 
   const categories = [
-    { value: "all", label: "All Categories" },
-    { value: "plumber", label: "Plumbing" },
-    { value: "electrician", label: "Electrical" },
-    { value: "carpenter", label: "Carpentry" },
-    { value: "cleaner", label: "Cleaning" },
+    { value: 'all', label: 'All Categories' },
+    { value: 'plumbing', label: 'Plumber' },
+    { value: 'electrician', label: 'Electrician' },
+    { value: 'carpenter', label: 'Carpenter' },
+    { value: 'painting', label: 'Painter' },
+    { value: 'cleaning', label: 'Cleaner' },
+    { value: 'gardening', label: 'Gardener' },
+    { value: 'moving', label: 'Mover' },
+    { value: 'mechanic', label: 'Mechanic' },
+    { value: 'other', label: 'Other' },
   ];
+
+  const filteredWorkers = workers.filter(worker => {
+    const matchesSearch = worker.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         worker.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         worker.position?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === "all" || 
+                           worker.position?.toLowerCase() === selectedCategory.toLowerCase();
+    
+    return matchesSearch && matchesCategory;
+  });
 
   const navItems = [
     { name: 'Home', link: '/' },
@@ -133,59 +166,55 @@ const Worker = () => {
       {/* Workers Grid */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {workers.map((worker) => (
+          {filteredWorkers.map((worker) => (
             <div key={worker.id} className="group bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-              
               {/* Header: MUI Avatar & Info */}
               <div className="flex items-start gap-4 mb-4">
                 <div className="relative shrink-0">
                   {/* --- MUI AVATAR USED HERE --- */}
                   <Avatar 
-                    alt={worker.name} 
+                    alt={worker.firstName || 'Worker Avatar'} 
                     src={worker.image} 
                     sx={{ width: 64, height: 64, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
                   />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
-                    {worker.name}
+                    {worker.firstName} {worker.lastName}
                   </h3>
                   <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
                     <Star className="w-3 h-3 fill-amber-400" />
-                    <span>{worker.rating}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {worker.tags.map((tag) => (
-                  <span key={tag} className="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
-                    {tag}
-                  </span>
-                ))}
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Profession:</span>
+                  <span className="text-sm text-slate-700 font-medium">{worker.position || 'N/A'}</span>
                 </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                  <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mb-4">Phone :</span>
-                  {/* <span> retrieve from DB</span> */}
+                
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Phone:</span>
+                  <span className="text-sm text-slate-700">{worker.phone}</span>
                 </div>
+              </div>
 
               {/* Footer: Location & Action */}
               <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-1.5 text-slate-400 text-sm">
                   <MapPin className="w-4 h-4" />
-                  <span className="truncate max-w-[100px]">{worker.location}</span>
+                  <span className="truncate max-w-[100px]">{worker.address}</span>
                 </div>
                 
                 <div className="shrink-0">
-                  <BasicModal >
+                  <BasicModal>
                     <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
                       View Profile
                     </button>
                   </BasicModal>
                 </div>
               </div>
-
             </div>
           ))}
         </div>

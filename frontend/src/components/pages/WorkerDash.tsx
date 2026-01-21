@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -20,16 +20,16 @@ const WorkerDashboard = () => {
   usePageTitle("Worker Dashboard");
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+  const { dbUser } = useAuth();
 
   const [formData, setFormData] = useState({
-    firstName: "Ahmed",
-    lastName: "Hassan",
-    age: "32",
-    phoneNumber: "+964 770 123 4567",
-    location: "Erbil",
-    description: "Experienced plumber with over 10 years in the field.",
-    profileImage: "", // Store the uploaded image URL
+    firstName: dbUser?.firstName || "",
+    lastName: dbUser?.lastName || "",
+    age: dbUser?.age ? String(dbUser.age) : "",
+    phoneNumber: dbUser?.phone || "",
+    location: dbUser?.address || "",
+    description: dbUser?.bio || "",
+    profileImage: dbUser?.image || "",
   });
 
   const [languages, setLanguages] = useState({
@@ -45,9 +45,48 @@ const WorkerDashboard = () => {
   ]);
 
   const [newSkill, setNewSkill] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(dbUser?.isActive ?? true);
 
   const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
+
+  // ✅ Update formData, skills, and languages when dbUser changes
+  useEffect(() => {
+    if (dbUser) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: dbUser.firstName || "",
+        lastName: dbUser.lastName || "",
+        phoneNumber: dbUser.phone || "",
+        location: dbUser.address || "",
+        profileImage: dbUser.image || "",
+        age: dbUser.age ? String(dbUser.age) : "",
+        description: dbUser.bio || "",
+      }));
+
+      // ✅ Load isActive from database
+      setIsActive(dbUser.isActive ?? true);
+
+      // ✅ Parse and load skills if they exist
+      if (dbUser.skills) {
+        try {
+          const parsedSkills = JSON.parse(dbUser.skills);
+          setSkills(parsedSkills);
+        } catch (e) {
+          console.error('Error parsing skills:', e);
+        }
+      }
+
+      // ✅ Parse and load languages if they exist
+      if (dbUser.languages) {
+        try {
+          const parsedLanguages = JSON.parse(dbUser.languages);
+          setLanguages(parsedLanguages);
+        } catch (e) {
+          console.error('Error parsing languages:', e);
+        }
+      }
+    }
+  }, [dbUser]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -57,6 +96,16 @@ const WorkerDashboard = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "Image size must be less than 2MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({ ...prev, profileImage: reader.result as string }));
@@ -87,12 +136,72 @@ const WorkerDashboard = () => {
     }
   };
 
-  const handleSave = () => {
-    console.log("Saving profile:", { formData, languages, skills, isActive });
-    toast({
-      title: "Profile Updated",
-      description: "Your changes have been saved successfully.",
-    });
+  // ✅ Updated handleSave to include skills and languages
+  const handleSave = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to update your profile.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const token = await user.getIdToken();
+      
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phoneNumber,
+        address: formData.location,
+        age: parseInt(formData.age) || null,
+        description: formData.description,
+        skills: JSON.stringify(skills), // ✅ Save skills as JSON string
+        languages: JSON.stringify(languages), // ✅ Save languages as JSON string
+        isActive: isActive, // ✅ Add this line
+        ...(formData.profileImage && { image: formData.profileImage })
+      };
+
+      console.log('Sending update:', payload);
+      
+      const response = await fetch('http://localhost:3000/api/auth/me', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Update failed:', errorData);
+        throw new Error(errorData.error || 'Failed to update profile');
+      }
+
+      const updatedUser = await response.json();
+      console.log('Update successful:', updatedUser);
+      
+      toast({
+        title: "Success",
+        description: "Profile updated successfully!",
+      });
+
+      // Reload to refresh data
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Update error:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save changes. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSignOut = async () => {
@@ -114,7 +223,7 @@ const WorkerDashboard = () => {
 
   // Get initials from first and last name
   const getInitials = () => {
-    return `${formData.firstName.charAt(0)}${formData.lastName.charAt(0)}`.toUpperCase();
+    return `${formData.firstName?.[0] || ''}${formData.lastName?.[0] || ''}`.toUpperCase();
   };
 
   return (

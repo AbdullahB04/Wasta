@@ -20,22 +20,32 @@ const UserDashboard = () => {
   const { dbUser } = useAuth();
 
   const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    phoneNumber: "+964 750 123 4567",
-    location: "Erbil",
-    profileImage: ""
+    firstName: dbUser?.firstName || "",
+    lastName: dbUser?.lastName || "",
+    phoneNumber: dbUser?.phone || "",
+    location: dbUser?.address || "",
+    profileImage: dbUser?.image || "", // Add this to formData
   });
 
   const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string) => { 
     setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  }; 
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "Image size must be less than 2MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData(prev => ({ ...prev, profileImage: reader.result as string }));
@@ -44,11 +54,66 @@ const UserDashboard = () => {
     }
   };
 
-  const handleSave = () => {
-    toast({
-      title: "Profile Updated",
-      description: "Your changes have been saved successfully.",
-    });
+  const handleSave = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to update your profile.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const token = await user.getIdToken();
+      
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phoneNumber,
+        address: formData.location,
+        ...(formData.profileImage && { image: formData.profileImage })
+      };
+
+      console.log('Sending update with image size:', formData.profileImage?.length || 0);
+      
+      const response = await fetch('http://localhost:3000/api/auth/me', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Update failed:', errorData);
+        throw new Error(errorData.error || 'Failed to update profile');
+      }
+
+      const updatedUser = await response.json();
+      console.log('Update successful:', updatedUser);
+      
+      toast({
+        title: "Success",
+        description: "Profile updated successfully!",
+      });
+
+      // Don't reload, just refresh the context
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Update error:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save changes. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSignOut = async () => {
@@ -113,9 +178,13 @@ const UserDashboard = () => {
                 <div className="relative group">
                   <div className="p-1.5 bg-white rounded-full shadow-lg">
                       <Avatar className="h-32 w-32 border-4 border-slate-50">
-                        <AvatarImage src={formData.profileImage} alt={`${formData.firstName}`} className="object-cover" />
+                        <AvatarImage 
+                          src={formData.profileImage} 
+                          alt={`${formData.firstName}`} 
+                          className="object-cover" 
+                        />
                         <AvatarFallback className="text-4xl font-bold bg-slate-100 text-slate-400">
-                          {formData.firstName[0]}{formData.lastName[0]}
+                          {formData.firstName?.[0]}{formData.lastName?.[0]}
                         </AvatarFallback>
                       </Avatar>
                   </div>

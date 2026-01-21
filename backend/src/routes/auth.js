@@ -155,4 +155,58 @@ router.get('/me', verifyFirebaseToken, async (req, res) => {
   }
 });
 
+// Update user profile
+router.put('/me', verifyFirebaseToken, async (req, res) => {
+  try {
+    const firebaseUid = req.user.uid;
+    const { firstName, lastName, phone, address, image, age, description, skills, languages, isActive } = req.body;
+
+    let user = await prisma.user.findUnique({
+      where: { firebaseUid }
+    });
+
+    if (user) {
+      user = await prisma.user.update({
+        where: { firebaseUid },
+        data: {
+          firstName,
+          lastName,
+          phone,
+          address,
+          ...(image && { image })
+        }
+      });
+      return res.json(user);
+    }
+
+    let worker = await prisma.worker.findUnique({
+      where: { firebaseUid }
+    });
+
+    if (worker) {
+      worker = await prisma.worker.update({
+        where: { firebaseUid },
+        data: {
+          firstName,
+          lastName,
+          phone,
+          address,
+          age: parseInt(age) || worker.age,
+          bio: description || worker.bio,
+          skills: skills || worker.skills,
+          languages: languages || worker.languages,
+          isActive: typeof isActive === 'boolean' ? isActive : worker.isActive, // ✅ Add this line
+          ...(image && { image })
+        }
+      });
+      return res.json(worker);
+    }
+
+    res.status(404).json({ error: 'User not found' });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ error: 'Failed to update user data' });
+  }
+});
+
 export default router;

@@ -29,7 +29,6 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
 
-    // Basic validation
     if (!email.trim()) {
       setError('Email is required');
       return;
@@ -42,21 +41,18 @@ const LoginForm = () => {
     setLoading(true);
 
     try {
-      // Firebase login
-      const userCredential = await authService.login(email, password);
+      // Firebase login - this will trigger onAuthStateChanged which fetches user data
+      await authService.login(email, password);
       
-      console.log('Login successful:', userCredential);
+      console.log('✅ Login successful');
 
-      // Refresh user data from backend
-      await refreshUser();
-
-      // Navigate to home
+      // No need to call refreshUser() - onAuthStateChanged will handle it
+      // Just navigate
       navigate('/');
       
     } catch (error: any) {
       console.error('Login error:', error);
       
-      // Handle specific Firebase errors
       if (error.code === 'auth/user-not-found') {
         setError('No account found with this email. Please sign up first.');
       } else if (error.code === 'auth/wrong-password') {

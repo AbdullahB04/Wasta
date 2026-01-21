@@ -1,16 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Clock, Star, MessageCircle, User, MessageSquare, X } from 'lucide-react';
 import { LiaTelegramPlane } from "react-icons/lia";
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../../contexts/AuthContext';
+import { Badge } from '../ui/badge';
 
+interface WorkerType {
+  id: number;
+  firstName: string;
+  lastName: string;
+  position?: string;
+  image?: string;
+  phone: string;
+  address: string;
+  bio?: string;
+  skills?: string; // JSON string
+  languages?: string; // JSON string
+  isActive: boolean;
+}
 
 const WorkerProfileModal = () => {
   usePageTitle('Worker Profile');
+  const { dbUser } = useAuth();
+
   // State for feedback modal
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState(0);
   const [feedbackHover, setFeedbackHover] = useState(0);
   const [comment, setComment] = useState('');
+
+  // ✅ Parse skills and languages from dbUser
+  const [skills, setSkills] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<{[key: string]: boolean}>({});
+
+  useEffect(() => {
+    if (dbUser) {
+      // Parse skills
+      if (dbUser.skills) {
+        try {
+          const parsedSkills = JSON.parse(dbUser.skills);
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setSkills(parsedSkills);
+        } catch (e) {
+          console.error('Error parsing skills:', e);
+          setSkills([]);
+        }
+      }
+
+      // Parse languages
+      if (dbUser.languages) {
+        try {
+          const parsedLanguages = JSON.parse(dbUser.languages);
+          setLanguages(parsedLanguages);
+        } catch (e) {
+          console.error('Error parsing languages:', e);
+          setLanguages({});
+        }
+      }
+    }
+  }, [dbUser]);
+
+  // Get array of enabled languages
+  const enabledLanguages = Object.entries(languages)
+    .filter(([_, isEnabled]) => isEnabled)
+    .map(([lang]) => lang.charAt(0).toUpperCase() + lang.slice(1)); // Capitalize first letter
 
   const handleSubmitFeedback = () => {
     // Handle feedback submission logic here
@@ -30,18 +83,26 @@ const WorkerProfileModal = () => {
         {/* 1. Header: Avatar & Name */}
         <div className="flex flex-col sm:flex-row gap-6 items-start mb-6">
             
-            {/* Blank Profile Picture placeholder */}
+            {/* Profile Picture */}
             <div className="relative shrink-0 mx-auto sm:mx-0">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-50 shadow-sm bg-slate-100 flex items-center justify-center">
-                    <User className="w-12 h-12 text-slate-300" />
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-50 shadow-sm bg-slate-100 flex items-center justify-center overflow-hidden">
+                    {dbUser?.image ? (
+                      <img 
+                        src={dbUser.image} 
+                        alt={`${dbUser.firstName} ${dbUser.lastName}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-12 h-12 text-slate-300" />
+                    )}
                 </div>
             </div>
 
             {/* Name & Rating Info */}
             <div className="flex-1 space-y-2 pt-2 text-center sm:text-left">
                 <div>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">Kamal</h2>
-                    <p className="text-lg text-blue-600 font-medium">Plumber</p>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">{dbUser?.firstName} {dbUser?.lastName}</h2>
+                    <p className="text-lg text-blue-600 font-medium">{dbUser?.position}</p>
                 </div>
                 
                 <div className="flex items-center justify-center sm:justify-start gap-3">
@@ -61,7 +122,7 @@ const WorkerProfileModal = () => {
                 </div>
                 <div className="min-w-0">
                     <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Location</p>
-                    <p className="text-sm font-semibold text-slate-700 truncate">Erbil, Kurdistan</p>
+                    <p className="text-sm font-semibold text-slate-700 truncate">{dbUser?.address}</p>
                 </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -70,7 +131,9 @@ const WorkerProfileModal = () => {
                 </div>
                 <div className="min-w-0">
                     <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Availability</p>
-                    <p className="text-sm font-semibold text-green-600 truncate">Available Today</p>
+                    <p className={`text-sm font-semibold truncate ${dbUser?.isActive ? 'text-green-600' : 'text-slate-400'}`}>
+                      {dbUser?.isActive ? 'Available Today' : 'Not Available'}
+                    </p>
                 </div>
             </div>
         </div>
@@ -79,36 +142,48 @@ const WorkerProfileModal = () => {
         <div className="mb-6">
             <h3 className="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide">About</h3>
             <p className="text-slate-500 text-sm leading-relaxed">
-                Specializing in residential and commercial plumbing with over 10 years of experience. 
-                I handle emergency repairs, new installations, and routine maintenance with a focus on quality.
+                {dbUser?.bio || "No description available."}
             </p>
         </div>
 
-        {/* 4. Skills & Languages */}
+        {/* 4. Skills & Languages - ✅ Now from Database */}
         <div className="space-y-4 mb-6 border-t border-slate-100 pt-6">
+            {/* Skills */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
                 <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Skills:</span>
                 <div className="flex flex-wrap gap-2">
-                    {['Pipe Repair', 'Installation', 'Leak Detection', 'Maintenance'].map(skill => (
-                    <span key={skill} className="px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                        {skill}
-                    </span>
-                    ))}
+                    {skills.length > 0 ? (
+                      skills.map(skill => (
+                        <span key={skill} className="px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                            {skill}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm text-slate-400 italic">No skills listed</span>
+                    )}
                 </div>
             </div>
+
+            {/* Languages */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
                 <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Languages:</span>
                 <div className="flex flex-wrap gap-2">
-                    {['English', 'Kurdish', 'Arabic'].map(lang => (
-                    <span key={lang} className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
-                        {lang}
-                    </span>
-                    ))}
+                    {enabledLanguages.length > 0 ? (
+                      enabledLanguages.map(lang => (
+                        <span key={lang} className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                            {lang}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm text-slate-400 italic">No languages listed</span>
+                    )}
                 </div>
             </div>
+
+            {/* Phone */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Phone NO:</span>
-                {/* <span> retrieve from DB</span> */}
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Phone :</span>
+                <span className="text-sm text-slate-700 font-medium">{dbUser?.phone}</span>
             </div>
         </div>
 

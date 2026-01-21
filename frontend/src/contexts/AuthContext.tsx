@@ -3,18 +3,18 @@ import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 // Define types for database user
-interface DbUser {
-  id: string;
-  firebaseUid: string;
-  email: string;
+export interface DbUser {
+  id: number;
   firstName: string;
   lastName: string;
-  phone: string | null;
-  address: string | null;
-  role: 'USER' | 'WORKER';
   position?: string;
-  bio?: string | null;
-  createdAt: string;
+  image?: string;
+  phone: string;
+  address: string;
+  bio?: string;
+  skills?: string;
+  languages?: string;
+  isActive: boolean; // Add this line
 }
 
 // Define the context type
@@ -50,7 +50,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Function to fetch user data from backend
-  const fetchUserData = async (firebaseUser: FirebaseUser, retries = 3): Promise<void> => {
+  const fetchUserData = async (firebaseUser: FirebaseUser, retries = 5): Promise<void> => {
     try {
       const token = await firebaseUser.getIdToken();
       const response = await fetch('http://localhost:3000/api/auth/me', {
@@ -61,14 +61,14 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
       });
 
       if (response.status === 404) {
-        // User might be in the process of being created, retry
+        // User might be in the process of being created, retry with exponential backoff
         if (retries > 0) {
-          console.log(`User not found, retrying... (${retries} attempts left)`);
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+          console.log(`User not found, retrying in ${6 - retries} seconds... (${retries} attempts left)`);
+          await new Promise(resolve => setTimeout(resolve, (6 - retries) * 1000)); // Increasing delay
           return fetchUserData(firebaseUser, retries - 1);
         }
         
-        console.warn('User not found in database. User may need to complete registration.');
+        console.warn('User not found in database after multiple retries. Please complete registration.');
         setDbUser(null);
         return;
       }
@@ -78,6 +78,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
       }
 
       const userData = await response.json();
+      console.log('✅ User data fetched successfully:', userData);
       setDbUser(userData);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -94,9 +95,12 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('🔐 Auth state changed:', user ? `User: ${user.email}` : 'No user');
       setCurrentUser(user);
       
       if (user) {
+        // Wait a bit before fetching to allow registration to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
         await fetchUserData(user);
       } else {
         setDbUser(null);

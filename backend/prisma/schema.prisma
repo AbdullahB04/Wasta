@@ -9,31 +9,38 @@ datasource db {
 
 // Let's start with just 2 basic tables to understand
 model User {
-  id        String   @id @default(cuid())
+  id          String   @id @default(cuid())
   firebaseUid String   @unique
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  phone     String?
-  address   String?
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
+  email       String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  phone       String?
+  address     String?
+  image       String?  // Add this line
+  role        String   @default("USER")
+  createdAt   DateTime @default(now())
   @@map("users") 
 }
+
 model Worker {
-  id        String   @id @default(cuid())
+  id          String   @id @default(cuid())
   firebaseUid String   @unique
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  phone     String
-  address   String
-  position  String
-  bio       String?
-  role      String   @default("WORKER")
-  createdAt DateTime @default(now())
+  email       String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  phone       String
+  address     String
+  position    String
+  image       String?
+  age         Int?
+  bio         String?
+  skills      String?
+  languages   String?
+  isActive    Boolean  @default(true) // ✅ Add this line
+  role        String   @default("WORKER")
+  createdAt   DateTime @default(now())
   @@map("workers")
   WorkerService WorkerService[]
 }
