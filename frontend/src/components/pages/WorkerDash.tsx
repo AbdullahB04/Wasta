@@ -6,7 +6,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, MapPin, Camera, LogOut } from "lucide-react";
+import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, MapPin, Camera, LogOut, Star, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -14,6 +14,20 @@ import { useAuth } from '../../contexts/AuthContext';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from "../hooks/use-toast";
+import Avatar from '@mui/material/Avatar';
+
+interface FeedbackType {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    image: string | null;
+  };
+}
 
 
 const WorkerDashboard = () => {
@@ -46,6 +60,7 @@ const WorkerDashboard = () => {
 
   const [newSkill, setNewSkill] = useState("");
   const [isActive, setIsActive] = useState(dbUser?.isActive ?? true);
+  const [feedbacks, setFeedbacks] = useState<FeedbackType[]>([]);
 
   const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
 
@@ -85,6 +100,18 @@ const WorkerDashboard = () => {
           console.error('Error parsing languages:', e);
         }
       }
+
+      // ✅ Fetch feedbacks for this worker
+      const fetchFeedbacks = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/workers/${dbUser.id}/feedback`);
+          const data = await response.json();
+          setFeedbacks(data);
+        } catch (error) {
+          console.error('Error fetching feedbacks:', error);
+        }
+      };
+      fetchFeedbacks();
     }
   }, [dbUser]);
 
@@ -339,6 +366,69 @@ const WorkerDashboard = () => {
                       `}
                     />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Feedbacks Card */}
+            <Card className="border-slate-200 shadow-sm">
+              <CardHeader className="pb-4 border-b border-slate-50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-amber-50 rounded-lg text-amber-600">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg font-bold text-slate-900">Client Feedbacks</CardTitle>
+                    <CardDescription>See what clients are saying about you</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                {feedbacks.length > 0 ? (
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                    {feedbacks.map((feedback) => (
+                      <div key={feedback.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                        <div className="flex items-start gap-3 mb-3">
+                          <Avatar
+                            src={feedback.user.image || undefined}
+                            alt={feedback.user.firstName}
+                            sx={{ width: 40, height: 40 }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-slate-900 text-sm">
+                              {feedback.user.firstName} {feedback.user.lastName}
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-3.5 h-3.5 ${
+                                    i < feedback.rating
+                                      ? 'fill-amber-400 text-amber-400'
+                                      : 'text-slate-300'
+                                  }`}
+                                />
+                              ))}
+                              <span className="text-xs text-slate-500 ml-1">
+                                {new Date(feedback.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        {feedback.comment && (
+                          <p className="text-sm text-slate-600 leading-relaxed pl-0">
+                            "{feedback.comment}"
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-500 text-sm font-medium">No feedbacks yet</p>
+                    <p className="text-slate-400 text-xs mt-1">Client reviews will appear here</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

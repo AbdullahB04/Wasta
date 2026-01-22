@@ -18,7 +18,6 @@ import {
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import authService from '../../services/authService';
 
 const RegistrationForm = () => {
   usePageTitle('Register');
@@ -52,7 +51,7 @@ const RegistrationForm = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch('http://localhost:3000/services');
+        const response = await fetch('http://localhost:3000/category');
         
         // Check if response is ok
         if (!response.ok) {

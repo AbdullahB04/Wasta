@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home } from 'lucide-react'; // Using Lucide for consistency
+import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home, Hammer, Scissors, Car, TreePine } from 'lucide-react'; // Using Lucide for consistency
 import SpotlightCard from "../ui/SpotlightCard"; // Keeping your component
 import { Link } from 'react-router-dom';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
@@ -7,21 +8,52 @@ import Footer from '../ui/Footer';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 
-
+interface CategoryType {
+  id: string;
+  name: string;
+}
 
 const Category = () => {
   usePageTitle('Categories');
   const { dbUser } = useAuth();
-  
-  // Example data to make the grid look real
-  const categories = [
-    { name: "Plumbing", icon: <Wrench className="w-10 h-10 text-blue-500" />,  },
-    { name: "Electrical", icon: <Zap className="w-10 h-10 text-blue-500" />,  },
-    { name: "Painting", icon: <PaintBucket className="w-10 h-10 text-blue-500" />,  },
-    { name: "Moving", icon: <Truck className="w-10 h-10 text-blue-500" />,  },
-    { name: "Cleaning", icon: <Home className="w-10 h-10 text-blue-500" />,  },
-    { name: "Landscaping", icon: <Search className="w-10 h-10 text-blue-500" />,  },
-  ];
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/category');
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+
+  // Map category names to icons
+  const getIconForCategory = (name: string) => {
+    const iconMap: { [key: string]: JSX.Element } = {
+      'plumbing': <Wrench className="w-10 h-10 text-blue-500" />,
+      'electrical': <Zap className="w-10 h-10 text-blue-500" />,
+      'painting': <PaintBucket className="w-10 h-10 text-blue-500" />,
+      'moving': <Truck className="w-10 h-10 text-blue-500" />,
+      'cleaning': <Home className="w-10 h-10 text-blue-500" />,
+      'landscaping': <TreePine className="w-10 h-10 text-blue-500" />,
+      'gardening': <TreePine className="w-10 h-10 text-blue-500" />,
+      'carpenter': <Hammer className="w-10 h-10 text-blue-500" />,
+      'carpentry': <Hammer className="w-10 h-10 text-blue-500" />,
+      'mechanic': <Car className="w-10 h-10 text-blue-500" />,
+      'other': <Search className="w-10 h-10 text-blue-500" />,
+    };
+    
+    const key = name.toLowerCase();
+    return iconMap[key] || <Scissors className="w-10 h-10 text-blue-500" />;
+  };
     const navItems = [
     {
       name: 'Home',
@@ -100,45 +132,57 @@ const Category = () => {
 
       {/* 2. The Categories Grid */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.1 } // This creates the "pop-pop-pop" effect
-            }
-          }}
-        >
-          {categories.map((cat, idx) => (
-            <motion.div
-              key={idx}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-            >
-              <SpotlightCard 
-                className="h-full bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-xl transition-all group cursor-pointer" 
-                spotlightColor="rgba(59, 130, 246, 0.1)" // Soft Blue Spotlight
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-slate-500 mt-4">Loading categories...</p>
+          </div>
+        ) : categories.length > 0 ? (
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 } // This creates the "pop-pop-pop" effect
+              }
+            }}
+          >
+            {categories.map((cat, idx) => (
+              <motion.div
+                key={cat.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
               >
-                <div className="p-8 flex flex-col items-center text-center h-full justify-center">
-                  <div className="mb-6 p-4 bg-slate-50 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                    {cat.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{cat.name}</h3>
-                  {/* <p className="text-slate-400 font-medium mb-6">{cat.count}</p> */}
-                  
-                  <span className="text-blue-600 font-semibold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
-                    View Professionals <ArrowRight className="w-4 h-4" />
-                  </span>
-                </div>
-              </SpotlightCard>
-            </motion.div>
-          ))}
-        </motion.div>
+                <Link to={`/worker?category=${cat.name.toLowerCase()}`}>
+                  <SpotlightCard 
+                    className="h-full bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-xl transition-all group cursor-pointer" 
+                    spotlightColor="rgba(59, 130, 246, 0.1)" // Soft Blue Spotlight
+                  >
+                    <div className="p-8 flex flex-col items-center text-center h-full justify-center">
+                      <div className="mb-6 p-4 bg-slate-50 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                        {getIconForCategory(cat.name)}
+                      </div>
+                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{cat.name}</h3>
+                      
+                      <span className="text-blue-600 font-semibold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+                        View Professionals <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </div>
+                  </SpotlightCard>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-slate-500 text-lg">No categories available</p>
+          </div>
+        )}
       </section>
 
       {/* 3. Bottom Call to Action (Refined) */}
