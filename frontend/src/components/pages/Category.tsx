@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home, Hammer, Scissors, Car, TreePine } from 'lucide-react'; // Using Lucide for consistency
+import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home, Hammer, Scissors, Car, TreePine, User } from 'lucide-react'; // Using Lucide for consistency
 import SpotlightCard from "../ui/SpotlightCard"; // Keeping your component
 import { Link } from 'react-router-dom';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
@@ -86,14 +86,18 @@ const Category = () => {
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
             {dbUser ? (
-              <Link to={getDashboardLink()}>
-                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  {dbUser.role === 'WORKER' ? (
-                    `${dbUser.firstName}'s Worker Dashboard`
-                  ) : (
-                    `${dbUser.firstName}'s Dashboard`
-                  )}
-                </NavbarButton>
+              <Link to={getDashboardLink()} className="relative group">
+                {dbUser.image ? (
+                  <img 
+                    src={dbUser.image} 
+                    alt={`${dbUser.firstName}'s profile`}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer">
+                    <User size={20} className="text-white" />
+                  </div>
+                )}
               </Link>
             ) : (
               <Link to="/Login">
@@ -134,7 +138,7 @@ const Category = () => {
       <section className="max-w-7xl mx-auto px-6 pb-24">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="inline-block w-12 h-12 border-8 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             <p className="text-slate-500 mt-4">Loading categories...</p>
           </div>
         ) : categories.length > 0 ? (
@@ -160,7 +164,7 @@ const Category = () => {
               >
                 <Link to={`/worker?category=${cat.name.toLowerCase()}`}>
                   <SpotlightCard 
-                    className="h-full bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-xl transition-all group cursor-pointer" 
+                    className="h-full bg-white border-solid border-[1px] border-blue-200 rounded-3xl shadow-sm hover:shadow-xl transition-all group cursor-pointer" 
                     spotlightColor="rgba(59, 130, 246, 0.1)" // Soft Blue Spotlight
                   >
                     <div className="p-8 flex flex-col items-center text-center h-full justify-center">

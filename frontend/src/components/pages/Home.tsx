@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 import Footer from '../ui/Footer';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
+import { User } from 'lucide-react';
 
 const content = [
   {
@@ -74,14 +75,18 @@ const Home = () => {
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
             {dbUser ? (
-              <Link to={getDashboardLink()}>
-                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  {dbUser.role === 'WORKER' ? (
-                    `${dbUser.firstName}'s Worker Dashboard`
-                  ) : (
-                    `${dbUser.firstName}'s Dashboard`
-                  )}
-                </NavbarButton>
+              <Link to={getDashboardLink()} className="relative group">
+                {dbUser.image ? (
+                  <img 
+                    src={dbUser.image} 
+                    alt={`${dbUser.firstName}'s profile`}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer">
+                    <User size={20} className="text-white" />
+                  </div>
+                )}
               </Link>
             ) : (
               <Link to="/Login">

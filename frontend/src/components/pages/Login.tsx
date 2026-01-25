@@ -24,6 +24,13 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { refreshUser } = useAuth();
   
+  // Forgot password modal states
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetError, setResetError] = useState('');
+  const [resetSuccess, setResetSuccess] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,22 +80,57 @@ const LoginForm = () => {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email.trim()) {
-      setError('Please enter your email address first');
+  const handleForgotPasswordClick = () => {
+    setShowForgotPasswordModal(true);
+    setResetEmail(email); // Pre-fill with login email if available
+    setResetError('');
+    setResetSuccess('');
+  };
+
+  const handleResetPasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setResetError('');
+    setResetSuccess('');
+
+    if (!resetEmail.trim()) {
+      setResetError('Email is required');
       return;
     }
 
+    setResetLoading(true);
+
     try {
-      await authService.resetPassword(email);
-      setError(''); // Clear any existing errors
-      alert('Password reset email sent! Please check your inbox.');
+      await authService.resetPassword(resetEmail);
+      setResetSuccess('Password reset email sent! Please check your inbox and follow the instructions to reset your password.');
+      setResetError('');
+      // Clear the form after 3 seconds and close modal
+      setTimeout(() => {
+        setShowForgotPasswordModal(false);
+        setResetEmail('');
+        setResetSuccess('');
+      }, 4000);
     } catch (error: any) {
+      console.error('Password reset error:', error);
       if (error.code === 'auth/user-not-found') {
-        setError('No account found with this email.');
+        setResetError('No account found with this email address.');
+      } else if (error.code === 'auth/invalid-email') {
+        setResetError('Invalid email address format.');
+      } else if (error.code === 'auth/too-many-requests') {
+        setResetError('Too many requests. Please try again later.');
       } else {
-        setError('Failed to send reset email. Please try again.');
+        setResetError('Failed to send reset email. Please try again.');
       }
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const closeForgotPasswordModal = () => {
+    if (!resetLoading) {
+      setShowForgotPasswordModal(false);
+      setResetEmail('');
+      setResetError('');
+      setResetSuccess('');
     }
   };
 
@@ -181,7 +223,7 @@ const LoginForm = () => {
           <div className="flex justify-end">
             <button 
               type="button"
-              onClick={handleForgotPassword}
+              onClick={handleForgotPasswordClick}
               disabled={loading}
               className="text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50"
             >
@@ -221,6 +263,106 @@ const LoginForm = () => {
         </form>
       </div>
 
+      {/* Forgot Password Modal */}
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-6 z-50 animate-fadeIn">
+          <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md p-8 md:p-10 border border-slate-100 animate-scaleIn">
+            
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={closeForgotPasswordModal}
+              aria-label="Close"
+              className="absolute right-4 top-4 p-2 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
+              disabled={resetLoading}
+            >
+              <X size={20} />
+            </button>
+
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="text-blue-600" size={28} />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Reset Password</h2>
+              <p className="text-slate-500 mt-2 text-sm">
+                Enter your email and we'll send you instructions to reset your password
+              </p>
+            </div>
+
+            {/* Success Alert */}
+            {resetSuccess && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl animate-fadeIn">
+                <p className="text-green-800 font-medium text-sm text-center">{resetSuccess}</p>
+              </div>
+            )}
+
+            {/* Error Alert */}
+            {resetError && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 animate-fadeIn">
+                <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+                <div className="flex-1">
+                  <p className="text-red-800 font-medium text-sm">{resetError}</p>
+                </div>
+                <button 
+                  onClick={() => setResetError('')}
+                  className="text-red-400 hover:text-red-600 transition"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            )}
+
+            <form onSubmit={handleResetPasswordSubmit} className="space-y-6">
+              {/* Email Address */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-900 ml-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative group">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                  <input 
+                    type="email" 
+                    placeholder="Enter your email" 
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    disabled={resetLoading}
+                    required
+                    className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-5 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button 
+                type="submit"
+                disabled={resetLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 font-bold py-4 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {resetLoading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  'Send Reset Link'
+                )}
+              </button>
+
+              {/* Back to Login */}
+              <button 
+                type="button"
+                onClick={closeForgotPasswordModal}
+                disabled={resetLoading}
+                className="w-full text-slate-600 hover:text-slate-900 font-semibold py-2 transition-colors disabled:opacity-50"
+              >
+                Back to Login
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Animation styles */}
       <style>{`
         @keyframes fadeIn {
@@ -229,6 +371,13 @@ const LoginForm = () => {
         }
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-scaleIn {
+          animation: scaleIn 0.3s ease-out forwards;
         }
         @keyframes spin {
           from { transform: rotate(0deg); }

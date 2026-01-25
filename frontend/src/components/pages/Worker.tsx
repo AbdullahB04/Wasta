@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Star, Filter, SlidersHorizontal, ArrowLeft } from 'lucide-react';
+import { Search, MapPin, Star, Filter, SlidersHorizontal, ArrowLeft, User } from 'lucide-react';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../ui/Footer';
@@ -123,7 +123,7 @@ const Worker = () => {
                       <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
                         {worker.firstName} {worker.lastName}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <div className="flex flex-col gap-2 mt-1">
                         {worker.averageRating !== null && worker.averageRating !== undefined ? (
                           <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
                             <Star className="w-3 h-3 fill-amber-400" />
@@ -137,7 +137,7 @@ const Worker = () => {
                           </div>
                         )}
                         
-                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
                           {worker.isActive ? 'Available' : 'Not Available'}
                         </div>
@@ -197,14 +197,18 @@ const Worker = () => {
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
             {dbUser ? (
-              <Link to={getDashboardLink()}>
-                <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  {dbUser.role === 'WORKER' ? (
-                    `${dbUser.firstName}'s Worker Dashboard`
-                  ) : (
-                    `${dbUser.firstName}'s Dashboard`
-                  )}
-                </NavbarButton>
+              <Link to={getDashboardLink()} className="relative group">
+                {dbUser.image ? (
+                  <img 
+                    src={dbUser.image} 
+                    alt={`${dbUser.firstName}'s profile`}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center border-2 border-blue-500 hover:border-cyan-500 transition-all cursor-pointer">
+                    <User size={20} className="text-white" />
+                  </div>
+                )}
               </Link>
             ) : (
               <Link to="/Login">
@@ -293,7 +297,7 @@ const Worker = () => {
                   <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
                     {worker.firstName} {worker.lastName}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                  <div className="flex flex-col gap-2 mt-1">
                     {worker.averageRating !== null && worker.averageRating !== undefined ? (
                       <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
                         <Star className="w-3 h-3 fill-amber-400" />
@@ -308,7 +312,7 @@ const Worker = () => {
                     )}
                     
                     {/* Active Status Badge */}
-                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
                       {worker.isActive ? 'Available' : 'Not Available'}
                     </div>

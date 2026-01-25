@@ -261,11 +261,11 @@ const WorkerDashboard = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link to="/worker">
-                <Button variant="ghost" size="icon" className="hover:bg-slate-100 rounded-full">
+              {/* <Link to="/"> */}
+                <Button variant="ghost" size="icon" className="hover:bg-slate-100 rounded-full" onClick={() => navigate(-1)}>
                   <ArrowLeft className="h-5 w-5 text-slate-600" />
                 </Button>
-              </Link>
+              {/* </Link> */}
               <div>
                 <h1 className="text-xl font-bold text-slate-900">My Dashboard</h1>
                 <p className="text-sm text-slate-500">Manage your professional profile</p>
