@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, MapPin, Star, Filter, SlidersHorizontal, ArrowLeft, User } from 'lucide-react';
+import { Search, MapPin, Star, Filter, ArrowLeft, User } from 'lucide-react';
 import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../ui/Footer';
@@ -26,6 +26,18 @@ const Worker = () => {
   const { dbUser } = useAuth();
   const [searchParams] = useSearchParams();
 
+  // Format phone number to 964 750 xxx xxxx
+  const formatPhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length >= 12) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6, 9)} ${cleaned.slice(9)}`;
+    } else if (cleaned.length >= 9) {
+      // Format shorter numbers as best as possible
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+    }
+    return phone;
+  };
+
   const [workers, setWorkers] = useState<WorkerType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(() => {
@@ -33,7 +45,7 @@ const Worker = () => {
     const categoryParam = searchParams.get('category');
     return categoryParam || "all";
   });
-  const [sortBy, setSortBy] = useState("rating");
+  const [selectedCity, setSelectedCity] = useState("all");
 
   // Check if coming from category page
   const isFromCategory = searchParams.has('category');
@@ -65,6 +77,9 @@ const Worker = () => {
     { value: 'other', label: 'Other' },
   ];
 
+  // Get unique cities from workers
+  const availableCities = ['all', ...Array.from(new Set(workers.map(w => w.address).filter(Boolean)))];
+
   const filteredWorkers = workers.filter(worker => {
     const matchesSearch = worker.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          worker.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,7 +88,9 @@ const Worker = () => {
     const matchesCategory = selectedCategory === "all" || 
                            worker.position?.toLowerCase() === selectedCategory.toLowerCase();
     
-    return matchesSearch && matchesCategory;
+    const matchesCity = selectedCity === "all" || worker.address === selectedCity;
+    
+    return matchesSearch && matchesCategory && matchesCity;
   });
 
   const navItems = [
@@ -153,7 +170,7 @@ const Worker = () => {
                     
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Phone:</span>
-                      <span className="text-sm text-slate-700">{worker.phone}</span>
+                      <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
                     </div>
                   </div>
 
@@ -263,14 +280,16 @@ const Worker = () => {
               </div>
 
               <div className="relative min-w-[160px]">
-                <SlidersHorizontal className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
                 <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full pl-10 pr-8 py-3.5 bg-slate-50 hover:bg-slate-100 border border-transparent rounded-xl text-slate-700 text-sm font-semibold focus:outline-none appearance-none cursor-pointer transition-colors"
                 >
-                  <option value="rating">Highest Rated</option>
-                  <option value="distance">Nearest First</option>
+                  <option value="all">All Cities</option>
+                  {availableCities.filter(city => city !== 'all').map((city) => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -328,7 +347,7 @@ const Worker = () => {
                 
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Phone:</span>
-                  <span className="text-sm text-slate-700">{worker.phone}</span>
+                  <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
                 </div>
               </div>
 

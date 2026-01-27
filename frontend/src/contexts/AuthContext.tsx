@@ -99,8 +99,6 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
       
       if (user) {
-        // Wait a bit before fetching to allow registration to complete
-        await new Promise(resolve => setTimeout(resolve, 500));
         await fetchUserData(user);
       } else {
         setDbUser(null);

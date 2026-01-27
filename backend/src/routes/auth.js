@@ -29,6 +29,15 @@ router.post('/register', async (req, res) => {
   try {
     const { position, role, email, firstName, lastName, phone, address, password } = req.body;
 
+    // Validate phone has country code 964
+    const cleanedPhone = phone.replace(/\D/g, '');
+    if (!cleanedPhone.startsWith('964')) {
+      return res.status(400).json({ error: 'Phone number must start with country code 964' });
+    }
+    if (cleanedPhone.length < 12) {
+      return res.status(400).json({ error: 'Phone number must be 12 digits (964 + 9 digits)' });
+    }
+
     // Create Firebase user first
     console.log("3. Creating Firebase user...");
     const firebaseUser = await admin.auth().createUser({
@@ -159,7 +168,9 @@ router.get('/me', verifyFirebaseToken, async (req, res) => {
 router.put('/me', verifyFirebaseToken, async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
-    const { firstName, lastName, phone, address, image, age, description, skills, languages, isActive } = req.body;
+    const { firstName, lastName, phone, address, image, age, description, skills, languages, isActive, position } = req.body;
+
+    console.log('📝 Update request received:', { firstName, lastName, phone, address, age, description, position, isActive });
 
     let user = await prisma.user.findUnique({
       where: { firebaseUid }
@@ -184,21 +195,32 @@ router.put('/me', verifyFirebaseToken, async (req, res) => {
     });
 
     if (worker) {
+      const updateData = {
+        firstName,
+        lastName,
+        phone,
+        address,
+        age: parseInt(age) || worker.age,
+        bio: description || worker.bio,
+        skills: skills || worker.skills,
+        languages: languages || worker.languages,
+        isActive: typeof isActive === 'boolean' ? isActive : worker.isActive,
+        ...(image && { image })
+      };
+
+      // Always update position if it's provided and not empty
+      if (position && position.trim() !== '') {
+        updateData.position = position;
+      }
+
+      console.log('💾 Updating worker with data:', updateData);
+
       worker = await prisma.worker.update({
         where: { firebaseUid },
-        data: {
-          firstName,
-          lastName,
-          phone,
-          address,
-          age: parseInt(age) || worker.age,
-          bio: description || worker.bio,
-          skills: skills || worker.skills,
-          languages: languages || worker.languages,
-          isActive: typeof isActive === 'boolean' ? isActive : worker.isActive, // ✅ Add this line
-          ...(image && { image })
-        }
+        data: updateData
       });
+      
+      console.log('✅ Worker updated successfully:', worker);
       return res.json(worker);
     }
 

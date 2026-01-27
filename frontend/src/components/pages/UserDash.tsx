@@ -29,6 +29,17 @@ const UserDashboard = () => {
 
   const availableLocations = ["Erbil", "Duhok", "Sulaimani", "Kirkuk", "Halabja"];
 
+  // Format phone number to 964 750 xxx xxxx
+  const formatPhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length >= 12) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6, 9)} ${cleaned.slice(9)}`;
+    } else if (cleaned.length >= 9) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+    }
+    return phone;
+  };
+
   const handleInputChange = (field: string, value: string) => { 
     setFormData(prev => ({ ...prev, [field]: value }));
   }; 
@@ -61,6 +72,25 @@ const UserDashboard = () => {
         toast({
           title: "Error",
           description: "You must be logged in to update your profile.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Validate phone has country code 964
+      const cleanedPhone = formData.phoneNumber.replace(/\D/g, '');
+      if (!cleanedPhone.startsWith('964')) {
+        toast({
+          title: "Error",
+          description: "Phone number must start with country code 964",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (cleanedPhone.length < 12) {
+        toast({
+          title: "Error",
+          description: "Phone number must be 12 digits (964 + 9 digits)",
           variant: "destructive"
         });
         return;
@@ -249,10 +279,17 @@ const UserDashboard = () => {
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       id="phone"
-                      value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                      value={formatPhone(formData.phoneNumber)}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                        // Auto-prefix with 964 if user starts typing without it
+                        if (value && !value.startsWith('964')) {
+                          value = '964' + value;
+                        }
+                        handleInputChange("phoneNumber", value);
+                      }}
                       className="pl-10 h-12 border-slate-200 focus-visible:ring-blue-500/20 rounded-xl bg-slate-50/50 focus:bg-white transition-colors"
-                      placeholder="+964..."
+                      placeholder="964 750 123 4567"
                     />
                   </div>
                 </div>

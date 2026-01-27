@@ -106,6 +106,16 @@ const RegistrationForm = () => {
       setError('Phone number is required');
       return false;
     }
+    // Validate phone has country code 964
+    const cleanedPhone = formData.phone.replace(/\D/g, '');
+    if (!cleanedPhone.startsWith('964')) {
+      setError('Phone number must start with country code 964');
+      return false;
+    }
+    if (cleanedPhone.length < 12) {
+      setError('Phone number must be 12 digits (964 + 9 digits)');
+      return false;
+    }
     if (role === 'worker' && !formData.position) {
       setError('Please select your profession');
       return false;
@@ -323,10 +333,18 @@ const RegistrationForm = () => {
               <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type="tel" 
-                placeholder="+964 123 456 7890" 
+                placeholder="964 750 123 4567" 
                 className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-5 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                  // Auto-prefix with 964 if user starts typing without it
+                  if (value && !value.startsWith('964')) {
+                    value = '964' + value;
+                  }
+                  setFormData({ ...formData, phone: value });
+                }}
+                maxLength={13}
                 disabled={loading}
                 required
               />

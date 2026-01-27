@@ -110,6 +110,18 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
     .filter(([, isEnabled]) => isEnabled)
     .map(([lang]) => lang.charAt(0).toUpperCase() + lang.slice(1)); // Capitalize first letter
 
+  // Format phone number to 964 750 xxx xxxx
+  const formatPhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length >= 12) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6, 9)} ${cleaned.slice(9)}`;
+    } else if (cleaned.length >= 9) {
+      // Format shorter numbers as best as possible
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+    }
+    return phone;
+  };
+
   const handleSubmitFeedback = async () => {
     if (!dbUser || feedbackRating === 0) return;
 
@@ -278,7 +290,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
             {/* Phone */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
                 <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Phone :</span>
-                <span className="text-sm text-slate-700 font-medium">{worker?.phone}</span>
+                <span className="text-sm text-slate-700 font-medium">{formatPhone(worker?.phone)}</span>
             </div>
         </div>
 
@@ -310,6 +322,10 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     : 'bg-slate-300 text-slate-500 cursor-not-allowed'
                 }`}
                 title={!worker?.isActive ? 'Worker is not available' : ''}
+                onClick={() => {
+                  const cleanPhone = worker?.phone.replace(/\D/g, ''); // Remove all non-digits
+                  window.open(`https://wa.me/${cleanPhone}`, '_blank');
+                }}
               >
                   <MessageCircle className="w-6 h-6" />
                   WhatsApp
@@ -322,6 +338,10 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     : 'bg-slate-300 text-slate-500 cursor-not-allowed'
                 }`}
                 title={!worker?.isActive ? 'Worker is not available' : ''}
+                onClick={() => {
+                  const cleanPhone = worker?.phone.replace(/\D/g, ''); // Remove all non-digits
+                  window.open(`https://t.me/+${cleanPhone}`, '_blank');
+                }}
               >
                   <LiaTelegramPlane className="w-7 h-7" />
                   Telegram

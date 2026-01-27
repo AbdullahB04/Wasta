@@ -44,6 +44,7 @@ const WorkerDashboard = () => {
     location: dbUser?.address || "",
     description: dbUser?.bio || "",
     profileImage: dbUser?.image || "",
+    position: dbUser?.position || "",
   });
 
   const [languages, setLanguages] = useState({
@@ -76,6 +77,7 @@ const WorkerDashboard = () => {
         profileImage: dbUser.image || "",
         age: dbUser.age ? String(dbUser.age) : "",
         description: dbUser.bio || "",
+        position: dbUser.position || "",
       }));
 
       // ✅ Load isActive from database
@@ -185,6 +187,7 @@ const WorkerDashboard = () => {
         address: formData.location,
         age: parseInt(formData.age) || null,
         description: formData.description,
+        position: formData.position, // ✅ Save position/profession
         skills: JSON.stringify(skills), // ✅ Save skills as JSON string
         languages: JSON.stringify(languages), // ✅ Save languages as JSON string
         isActive: isActive, // ✅ Add this line
@@ -491,6 +494,33 @@ const WorkerDashboard = () => {
                         {loc}
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                {/* Profession/Position Select Dropdown */}
+                <div className="space-y-2">
+                  <Label htmlFor="position" className="text-slate-700 flex items-center gap-2">
+                    <Briefcase className="w-4 h-4 text-slate-500" />
+                    Profession
+                  </Label>
+                  <select 
+                    name="position" 
+                    id="position"
+                    value={formData.position}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-white"
+                  >
+                    <option value="" disabled>Select your profession</option>
+                    <option value="Plumber">Plumber</option>
+                    <option value="Electrician">Electrician</option>
+                    <option value="Carpenter">Carpenter</option>
+                    <option value="Painter">Painter</option>
+                    <option value="Cleaner">Cleaner</option>
+                    <option value="Gardener">Gardener</option>
+                    <option value="Gardening">Gardening</option>
+                    <option value="Mover">Mover</option>
+                    <option value="Mechanic">Mechanic</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
