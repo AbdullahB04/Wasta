@@ -18,8 +18,11 @@ import {
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const RegistrationForm = () => {
+  const { t } = useTranslation();
   usePageTitle('Register');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -91,41 +94,41 @@ const RegistrationForm = () => {
   // Validate form
   const validateForm = () => {
     if (!formData.firstName.trim()) {
-      setError('First name is required');
+      setError(t('First name is required'));
       return false;
     }
     if (!formData.lastName.trim()) {
-      setError('Last name is required');
+      setError(t('Last name is required'));
       return false;
     }
     if (!formData.email.trim()) {
-      setError('Email is required');
+      setError(t('Email is required'));
       return false;
     }
     if (!formData.phone.trim()) {
-      setError('Phone number is required');
+      setError(t('Phone number is required'));
       return false;
     }
     // Validate phone has country code 964
     const cleanedPhone = formData.phone.replace(/\D/g, '');
     if (!cleanedPhone.startsWith('964')) {
-      setError('Phone number must start with country code 964');
+      setError(t('Phone number must start with country code 964'));
       return false;
     }
     if (cleanedPhone.length < 12) {
-      setError('Phone number must be 12 digits (964 + 9 digits)');
+      setError(t('Phone number must be 12 digits (964 + 9 digits)'));
       return false;
     }
     if (role === 'worker' && !formData.position) {
-      setError('Please select your profession');
+      setError(t('Please select your profession'));
       return false;
     }
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('Password must be at least 6 characters'));
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('Passwords do not match'));
       return false;
     }
     return true;
@@ -168,7 +171,7 @@ const RegistrationForm = () => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Registration failed');
+        throw new Error(error.error || t('Registration failed'));
       }
 
       const data = await response.json();
@@ -212,11 +215,8 @@ const RegistrationForm = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
           <div>
             <h2 className="text-3xl font-bold text-slate-900">
-              {role === 'client' ? 'Join as User' : 'Join as Worker'}
+              {role === 'client' ? t('Join as User') : t('Join as Worker')}
             </h2>
-            <p className="text-slate-500 mt-1">
-              {role === 'client' ? 'Find the perfect professional.' : 'Find your next job.'}
-            </p>
           </div>
 
           {/* Role Toggle Pill */}
@@ -233,7 +233,7 @@ const RegistrationForm = () => {
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <User size={18} />
-              I need workers
+              {t('I need workers')}
             </button>
             <button 
               id='worker'
@@ -247,7 +247,7 @@ const RegistrationForm = () => {
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <Briefcase size={18} />
-              I'm a worker
+              {t("I'm a worker")}
             </button>
           </div>
         </div>
@@ -274,7 +274,7 @@ const RegistrationForm = () => {
           {/* Row 1: Names */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              First Name <span className="text-red-500">*</span>
+              {t('First Name')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input 
@@ -291,7 +291,7 @@ const RegistrationForm = () => {
 
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Last Name <span className="text-red-500">*</span>
+              {t('Last Name')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input 
@@ -309,7 +309,7 @@ const RegistrationForm = () => {
           {/* Row 2: Contact Info */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Email Address <span className="text-red-500">*</span>
+              {t('Email Address')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
@@ -327,7 +327,7 @@ const RegistrationForm = () => {
 
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Phone Number <span className="text-red-500">*</span>
+              {t('Phone Number')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
@@ -355,7 +355,7 @@ const RegistrationForm = () => {
           {role === 'worker' && (
             <div className="md:col-span-2 space-y-2 animate-fadeIn">
               <label className="text-sm font-bold text-slate-900 ml-1">
-                Profession <span className="text-red-500">*</span>
+                {t('Profession')} <span className="text-red-500">*</span>
               </label>
               <div className="relative group">
                 <Hammer className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
@@ -366,7 +366,7 @@ const RegistrationForm = () => {
                   disabled={loading}
                   required
                 >
-                  <option value="" className="text-slate-400">Select your profession</option>
+                  <option value="" className="text-slate-400">{t('Select your profession')}</option>
                   {services.map((service) => (
                     <option key={service.id} value={service.id}>{service.name}</option>
                   ))}
@@ -379,13 +379,13 @@ const RegistrationForm = () => {
           {/* Row 3: Security */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Password <span className="text-red-500">*</span>
+              {t('Password')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type={showPassword ? "text" : "password"}
-                placeholder="Create a password" 
+                placeholder={t('Create a password')} 
                 className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-12 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -407,13 +407,13 @@ const RegistrationForm = () => {
 
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Confirm Password <span className="text-red-500">*</span>
+              {t('Confirm Password')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm your password" 
+                placeholder={t('Confirm your password')} 
                 className={`w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-12 focus:ring-2 focus:ring-blue-500/20 text-slate-900 placeholder:text-slate-400 font-medium transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
                   formData.confirmPassword && formData.confirmPassword !== formData.password 
                     ? 'ring-2 ring-red-500/20' 
@@ -434,7 +434,7 @@ const RegistrationForm = () => {
               </button>
             </div>
             {formData.confirmPassword && formData.confirmPassword !== formData.password && (
-              <p className="text-xs text-red-500 ml-1">Passwords do not match</p>
+              <p className="text-xs text-red-500 ml-1">{t('Passwords do not match')}</p>
             )}
           </div>
 
@@ -448,23 +448,23 @@ const RegistrationForm = () => {
               {loading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
-                  Creating Account...
+                  {t('Creating Account...')}
                 </>
               ) : (
                 <>
-                  Create Account
+                  {t('Create Account')}
                   <ArrowRight size={20} />
                 </>
               )}
             </button>
             
             <p className="text-slate-500 font-medium">
-              Already have an account?{' '}
+              {t('Already have an account?')}{' '}
               <Link 
                 to="/login" 
                 className={`text-blue-500 font-bold hover:text-blue-600 hover:underline ${loading ? 'pointer-events-none opacity-50' : ''}`}
               >
-                Sign in
+                {t('Sign in')}
               </Link>
             </p>
           </div>

@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import React, { useRef, useState } from "react";
 import logo from '../../assets/logo1.PNG'
+import { useTranslation } from 'react-i18next';
 
 
 interface NavbarProps {
@@ -291,3 +292,64 @@ export const NavbarButton = ({
     </Tag>
   );
 };
+
+export const LanguageToggle = () => {
+  const { i18n } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setIsOpen(false);
+  };
+
+  const getDisplayLanguage = () => {
+    switch(i18n.language) {
+      case 'ar': return 'العربية';
+      case 'ku': return 'کوردی';
+      default: return 'English';
+    }
+  };
+
+  return (
+    <div className="relative z-20">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="px-4 py-2 rounded-md bg-white text-black text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+      >
+        {getDisplayLanguage()}
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg overflow-hidden z-50">
+          <button
+            onClick={() => toggleLanguage('en')}
+            className={cn(
+              "block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 transition-colors",
+              i18n.language === 'en' && "bg-blue-100 font-bold"
+            )}
+          >
+            English
+          </button>
+          <button
+            onClick={() => toggleLanguage('ar')}
+            className={cn(
+              "block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 transition-colors",
+              i18n.language === 'ar' && "bg-blue-100 font-bold"
+            )}
+          >
+            العربية
+          </button>
+          <button
+            onClick={() => toggleLanguage('ku')}
+            className={cn(
+              "block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 transition-colors",
+              i18n.language === 'ku' && "bg-blue-100 font-bold"
+            )}
+          >
+            کوردی
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+

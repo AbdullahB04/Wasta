@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Search, ArrowRight, Wrench, Zap, PaintBucket, Truck, Home, Hammer, Scissors, Car, TreePine, User } from 'lucide-react'; // Using Lucide for consistency
 import SpotlightCard from "../ui/SpotlightCard"; // Keeping your component
 import { Link } from 'react-router-dom';
-import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
+import { NavbarButton, NavbarLogo, NavBody, NavItems, LanguageToggle } from '../ui/Navbar';
 import Footer from '../ui/Footer';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 interface CategoryType {
   id: string;
@@ -16,6 +18,7 @@ interface CategoryType {
 const Category = () => {
   usePageTitle('Categories');
   const { dbUser } = useAuth();
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,15 +59,15 @@ const Category = () => {
   };
     const navItems = [
     {
-      name: 'Home',
+      name: t('home'),
       link: '/',
     },
     {
-      name: 'Workers',
+      name: t('workers'),
       link: '/worker'
     },
     {
-      name: 'Categories',
+      name: t('categories'),
       link: '/category'
     }
   ]
@@ -75,7 +78,7 @@ const Category = () => {
   };
 
   return (
-    <div dir='ltr' className=" font-[Vazirmatn] min-h-screen bg-white">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className=" font-[Vazirmatn] min-h-screen bg-white">
           <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
         .font-[Vazirmatn] { font-family: 'Vazirmatn', sans-serif; }
@@ -85,6 +88,7 @@ const Category = () => {
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             {dbUser ? (
               <Link to={getDashboardLink()} className="relative group">
                 {dbUser.image ? (
@@ -102,7 +106,7 @@ const Category = () => {
             ) : (
               <Link to="/Login">
                 <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  Sign in
+                  {t('signIn')}
                 </NavbarButton>
               </Link>
             )}
@@ -121,14 +125,13 @@ const Category = () => {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6">
-              Explore  <br />
+              {t('Explore')}  <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                Services
+                {t('Services')}
               </span>
             </h1>
             <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-              Find skilled professionals for any service you need. From quick home repairs 
-              to major renovations, we've got you covered.
+              {t('Find skilled professionals for any service you need. From quick home repairs to major renovations, we\'ve got you covered.')}
             </p>
           </motion.div>
         </div>
@@ -174,7 +177,7 @@ const Category = () => {
                       <h3 className="text-2xl font-bold text-slate-900 mb-2">{cat.name}</h3>
                       
                       <span className="text-blue-600 font-semibold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
-                        View Professionals <ArrowRight className="w-4 h-4" />
+                        {t('View Professionals')} <ArrowRight className="w-4 h-4" />
                       </span>
                     </div>
                   </SpotlightCard>
@@ -184,7 +187,7 @@ const Category = () => {
           </motion.div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-slate-500 text-lg">No categories available</p>
+            <p className="text-slate-500 text-lg">{t('No categories available')}</p>
           </div>
         )}
       </section>
@@ -201,14 +204,14 @@ const Category = () => {
             
             <div className="relative z-10">
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-                Can't find what you're looking for?
+                {t("Can't find what you're looking for?")}
               </h2>
               <p className="text-lg text-slate-500 mb-10 max-w-xl mx-auto">
-                Browse our complete directory of skilled professionals and filter by specific skills, location, or rating.
+                {t("Browse our complete directory of skilled professionals and filter by specific skills, location, or rating.")}
               </p>
               
               <Link to="/worker"><button className="px-10 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95">
-                Browse All Workers
+                {t("Browse All Workers")}
               </button></Link>
             </div>
           </div>

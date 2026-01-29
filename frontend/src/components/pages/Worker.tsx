@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Search, MapPin, Star, Filter, ArrowLeft, User } from 'lucide-react';
-import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar'; 
+import { NavbarButton, NavbarLogo, NavBody, NavItems, LanguageToggle } from '../ui/Navbar'; 
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../ui/Footer';
 import BasicModal from '../ui/Animated-modal';
 import Avatar from '@mui/material/Avatar';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 interface WorkerType {
   id: string;
@@ -24,6 +26,7 @@ interface WorkerType {
 const Worker = () => {
   usePageTitle('Workers');
   const { dbUser } = useAuth();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   // Format phone number to 964 750 xxx xxxx
@@ -65,7 +68,6 @@ const Worker = () => {
   }, []);
 
   const categories = [
-    { value: 'all', label: 'All Categories' },
     { value: 'plumbing', label: 'Plumber' },
     { value: 'electrical', label: 'Electrician' },
     { value: 'carpenter', label: 'Carpenter' },
@@ -94,9 +96,9 @@ const Worker = () => {
   });
 
   const navItems = [
-    { name: 'Home', link: '/' },
-    { name: 'Workers', link: '/worker' },
-    { name: 'Categories', link: '/category' }
+    { name: t('home'), link: '/' },
+    { name: t('workers'), link: '/worker' },
+    { name: t('categories'), link: '/category' }
   ];
 
     const getDashboardLink = () => {
@@ -107,7 +109,7 @@ const Worker = () => {
   // If coming from category page, show simplified view
   if (isFromCategory) {
     return (
-      <div dir='ltr' className="min-h-screen bg-slate-50/50">
+      <div dir={i18n.language === 'ar' || i18n.language === 'ku' ? 'rtl' : 'ltr'} className="min-h-screen bg-slate-50/50">
         {/* Simple Header with Back Button */}
         <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -150,13 +152,13 @@ const Worker = () => {
                         ) : (
                           <div className="flex items-center gap-1 text-slate-400 text-xs font-bold bg-slate-50 px-2 py-0.5 rounded-full w-fit">
                             <Star className="w-3 h-3" />
-                            <span>No ratings</span>
+                            <span>{t("No ratings")}</span>
                           </div>
                         )}
                         
                         <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-                          {worker.isActive ? 'Available' : 'Not Available'}
+                          {worker.isActive ? t("Available") : t("Not Available")}
                         </div>
                       </div>
                     </div>
@@ -164,12 +166,12 @@ const Worker = () => {
 
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Profession:</span>
+                      <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
                       <span className="text-sm text-slate-700 font-medium">{worker.position || 'N/A'}</span>
                     </div>
                     
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Phone:</span>
+                      <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("phone")}:</span>
                       <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
                     </div>
                   </div>
@@ -183,7 +185,7 @@ const Worker = () => {
                     <div className="shrink-0">
                       <BasicModal workerId={worker.id}>
                         <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
-                          View Profile
+                          {t("View Profile")}
                         </button>
                       </BasicModal>
                     </div>
@@ -205,7 +207,7 @@ const Worker = () => {
   }
 
   return (
-    <div dir='ltr' className="min-h-screen bg-slate-50/50">
+    <div {...(i18n.language === 'ar' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50">
 
       {/* Navbar Wrapper */}
       <div className="bg-white border-b border-slate-100">
@@ -213,6 +215,7 @@ const Worker = () => {
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             {dbUser ? (
               <Link to={getDashboardLink()} className="relative group">
                 {dbUser.image ? (
@@ -230,7 +233,7 @@ const Worker = () => {
             ) : (
               <Link to="/Login">
                 <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  Sign in
+                  {t('signIn')}
                 </NavbarButton>
               </Link>
             )}
@@ -245,10 +248,10 @@ const Worker = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Expert</span>
+              {t("Findyour")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">{t('Expert')}</span>
             </h1>
             <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-              Browse top-rated professionals in your area tailored to your specific needs.
+              {t('Browse top-rated professionals in your area tailored to your specific needs.')}
             </p>
           </div>
 
@@ -258,7 +261,7 @@ const Worker = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search by name, skill, or profession..."
+                placeholder={t("Search by name, skill, or profession...")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 bg-transparent rounded-xl focus:bg-slate-50 focus:outline-none text-slate-900 placeholder:text-slate-400 transition-colors"
@@ -273,6 +276,7 @@ const Worker = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full pl-10 pr-8 py-3.5 bg-slate-50 hover:bg-slate-100 border border-transparent rounded-xl text-slate-700 text-sm font-semibold focus:outline-none appearance-none cursor-pointer transition-colors"
                 >
+                  <option value="all">{t("All Categories")}</option>
                   {categories.map((cat) => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
                   ))}
@@ -286,7 +290,7 @@ const Worker = () => {
                   onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full pl-10 pr-8 py-3.5 bg-slate-50 hover:bg-slate-100 border border-transparent rounded-xl text-slate-700 text-sm font-semibold focus:outline-none appearance-none cursor-pointer transition-colors"
                 >
-                  <option value="all">All Cities</option>
+                  <option value="all">{t("All Cities")}</option>
                   {availableCities.filter(city => city !== 'all').map((city) => (
                     <option key={city} value={city}>{city}</option>
                   ))}
@@ -326,14 +330,14 @@ const Worker = () => {
                     ) : (
                       <div className="flex items-center gap-1 text-slate-400 text-xs font-bold bg-slate-50 px-2 py-0.5 rounded-full w-fit">
                         <Star className="w-3 h-3" />
-                        <span>No ratings</span>
+                        <span>{t("No ratings")}</span>
                       </div>
                     )}
                     
                     {/* Active Status Badge */}
                     <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-                      {worker.isActive ? 'Available' : 'Not Available'}
+                      {worker.isActive ? t("Available") : t("Not Available")}
                     </div>
                   </div>
                 </div>
@@ -341,12 +345,12 @@ const Worker = () => {
 
               <div className="space-y-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Profession:</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
                   <span className="text-sm text-slate-700 font-medium">{worker.position || 'N/A'}</span>
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">Phone:</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("phone")}:</span>
                   <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
                 </div>
               </div>
@@ -361,7 +365,7 @@ const Worker = () => {
                 <div className="shrink-0">
                   <BasicModal workerId={worker.id}>
                     <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
-                      View Profile
+                      {t("View Profile")}
                     </button>
                   </BasicModal>
                 </div>

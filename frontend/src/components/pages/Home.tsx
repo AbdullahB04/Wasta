@@ -4,61 +4,63 @@ import CTA from '../ui/CTA'
 import { GrMapLocation } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
-import { NavbarButton, NavbarLogo, NavBody, NavItems } from '../ui/Navbar';
+import { NavbarButton, NavbarLogo, NavBody, NavItems, LanguageToggle } from '../ui/Navbar';
 import {Link} from 'react-router-dom';
 import Footer from '../ui/Footer';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 import { User } from 'lucide-react';
-
-const content = [
-  {
-    title: 'Search by Location',
-    description: 'Easily find skilled professionals in your area for any job, big or small.',
-    content: (
-      <div>
-        <GrMapLocation size={150} className="text-sky-400 mx-auto mt-6" />
-      </div>
-    ),
-  },
-  { 
-    title: 'View Profiles',
-    description: 'Connect with workers who have a track record of excellence.',
-    content: (
-      <div>
-        <ImProfile size={180} className="text-sky-400 mx-auto mt-6" />
-      </div>
-    ),
-  },
-  {
-    title: 'Communicate & Hire',
-    description: 'Communicate directly with workers to discuss your needs and hire with confidence.',
-    content: (
-      <div>
-        <IoChatbubbleEllipsesSharp size={180} className="text-sky-400 mx-auto mt-6" />
-      </div>
-    )
-  },
-]
-
-
+import { useTranslation } from 'react-i18next';
 
 
 const Home = () => {
   usePageTitle('Home')
   const { dbUser, loading } = useAuth();
+  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  
+
+  const content = [
+    {
+      title: t('searchByLocation'),
+      description: t('searchByLocationDesc'),
+      content: (
+        <div>
+          <GrMapLocation size={150} className="text-sky-400 mx-auto mt-6" />
+        </div>
+      ),
+    },
+    { 
+      title: t('viewProfiles'),
+      description: t('viewProfilesDesc'),
+      content: (
+        <div>
+          <ImProfile size={180} className="text-sky-400 mx-auto mt-6" />
+        </div>
+      ),
+    },
+    {
+      title: t('communicateAndHire'),
+      description: t('communicateAndHireDesc'),
+      content: (
+        <div>
+          <IoChatbubbleEllipsesSharp size={180} className="text-sky-400 mx-auto mt-6" />
+        </div>
+      )
+    },
+  ]
 
   const navItems = [
     {
-      name: 'Home',
+      name: t('home'),
       link: '/',
     },
     {
-      name: 'Workers',
+      name: t('workers'),
       link: '/worker'
     },
     {
-      name: 'Categories',
+      name: t('categories'),
       link: '/category'
     }
   ]
@@ -69,11 +71,12 @@ const Home = () => {
   };
 
   return (
-  <div dir='ltr'>
+  <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} >
     <NavBody>
       <NavbarLogo />
         <NavItems items={navItems} />
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             {dbUser ? (
               <Link to={getDashboardLink()} className="relative group">
                 {dbUser.image ? (
@@ -91,7 +94,7 @@ const Home = () => {
             ) : (
               <Link to="/Login">
                 <NavbarButton className='bg-gradient-to-r from-blue-600 to-cyan-500 text-white'>
-                  Sign in
+                  {t('signIn')}
                 </NavbarButton>
               </Link>
             )}

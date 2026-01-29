@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {Link} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import img from '../../assets/jeriden-villegas-VLPUm5wP5Z0-unsplash.jpg';
+import img1 from '../../assets/eric-wang-umD2Bj4FmMU-unsplash.jpg';
+import img2 from '../../assets/rafael-juarez-hTUdXgbhd3o-unsplash.jpg';
+import img3 from '../../assets/benjamin-wedemeyer-bzzSg8hTKKY-unsplash.jpg';
 
 const Hero: React.FC = () => {
   const [index, setIndex] = useState<number>(0);
+  const { i18n } = useTranslation();
 
   const images: string[] = [
-    "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800",
+    img,
+    img1,
+    img2,
+    img3,
   ];
 
   useEffect(() => {
@@ -34,15 +43,14 @@ const Hero: React.FC = () => {
           >
             <div className="space-y-3">
                <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Find trusted <br />
+                {i18n.t('findTrusted')} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                  local workers
+                  {i18n.t('localWorkers')}
                 </span>
-                <span className="text-slate-900"> near you</span>
+                <span className="text-slate-900"> {i18n.t('nearYou')}</span>
               </h1>
               <p className="text-lg text-slate-500 max-w-md leading-relaxed">
-                Connect with vetted professionals for home and business needs. 
-                Reliable help, just a click away.
+                {i18n.t('connectWithProfessionals')}
               </p>
             </div>
 
@@ -51,10 +59,10 @@ const Hero: React.FC = () => {
             {/* Clean Buttons */}
             <div className="flex items-center gap-4 pt-2">
               <Link to="/register" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all text-sm shadow-md">
-                Register as User
+                {i18n.t('registerAsUser')}
               </Link>
               <Link to="/register?role=worker" className="px-6 py-3 text-slate-600 rounded-xl font-semibold border border-slate-200 hover:border-blue-500 hover:text-blue-600 transition-all text-sm">
-                Register as Worker
+                {i18n.t('registerAsWorker')}
               </Link>
             </div>
           </motion.div>
