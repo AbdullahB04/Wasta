@@ -12,9 +12,13 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
+
 
 const UserDashboard = () => {
   usePageTitle("User Dashboard");
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { dbUser } = useAuth();
@@ -164,7 +168,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div dir="ltr" className="min-h-screen bg-slate-50/50 relative overflow-hidden">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50 relative overflow-hidden">
       
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-96 bg-blue-100/50 blur-[120px] -z-10 rounded-full pointer-events-none" />
@@ -181,8 +185,8 @@ const UserDashboard = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">My Profile</h1>
-            <p className="text-xs text-slate-500 font-medium">Manage your account details</p>
+            <h1 className="text-xl font-bold text-slate-900">{t('My Profile')}</h1>
+            <p className="text-xs text-slate-500 font-medium">{t('Manage your account details')}</p>
           </div>
         </div>
       </header>
@@ -236,7 +240,6 @@ const UserDashboard = () => {
                 </div>
                 <div className="mt-4 text-center">
                     <h2 className="text-2xl font-bold text-slate-900">{formData.firstName} {formData.lastName}</h2>
-                    <p className="text-slate-500 text-sm">Update your photo and personal details</p>
                 </div>
               </div>
 
@@ -245,7 +248,7 @@ const UserDashboard = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-slate-700 font-semibold">First Name</Label>
+                    <Label htmlFor="firstName" className="text-slate-700 font-semibold">{t('First Name')}</Label>
                     <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
@@ -259,7 +262,7 @@ const UserDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-slate-700 font-semibold">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-slate-700 font-semibold">{t('Last Name')}</Label>
                     <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
@@ -274,7 +277,7 @@ const UserDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-slate-700 font-semibold">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-slate-700 font-semibold">{t('Phone Number')}</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
@@ -296,7 +299,7 @@ const UserDashboard = () => {
 
                 {/* Location Select Dropdown */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-slate-700 font-semibold">Location</Label>
+                  <Label htmlFor="location" className="text-slate-700 font-semibold">{t('Location')}</Label>
                   <div className="relative">
                     <select 
                       name="location" 
@@ -305,7 +308,7 @@ const UserDashboard = () => {
                       onChange={(e) => handleInputChange("location", e.target.value)}
                       className="w-full pl-10 pr-4 h-12 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-slate-50/50 focus:bg-white transition-colors"
                     >
-                      <option value="" disabled>Select your location</option>
+                      <option value="" disabled>{t('Select your location')}</option>
                       {availableLocations.map((loc) => (
                         <option key={loc} value={loc}>
                           {loc}
@@ -322,7 +325,7 @@ const UserDashboard = () => {
                         className="w-full h-12 text-base gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all"
                     >
                       <Save className="h-5 w-5" />
-                      Save Changes
+                      {t('Save Changes')}
                     </Button>
                     
                     <Button 
@@ -331,7 +334,7 @@ const UserDashboard = () => {
                         className="w-full h-12 text-base gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 rounded-xl active:scale-95 transition-all"
                     >
                       <LogOut className="h-5 w-5" />
-                      Sign Out
+                      {t('Sign Out')}
                     </Button>
                 </div>
               </div>

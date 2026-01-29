@@ -12,10 +12,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import authService from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
-
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const LoginForm = () => {
   usePageTitle('Login');
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -37,11 +39,11 @@ const LoginForm = () => {
     setError('');
 
     if (!email.trim()) {
-      setError('Email is required');
+      setError(t('Email is required'));
       return;
     }
     if (!password.trim()) {
-      setError('Password is required');
+      setError(t('Password is required'));
       return;
     }
 
@@ -61,19 +63,19 @@ const LoginForm = () => {
       console.error('Login error:', error);
       
       if (error.code === 'auth/user-not-found') {
-        setError('No account found with this email. Please sign up first.');
+        setError(t('No account found with this email. Please sign up first.'));
       } else if (error.code === 'auth/wrong-password') {
-        setError('Incorrect password. Please try again.');
+        setError(t('Incorrect password. Please try again.'));
       } else if (error.code === 'auth/invalid-email') {
-        setError('Invalid email address format.');
+        setError(t('Invalid email address format.'));
       } else if (error.code === 'auth/too-many-requests') {
-        setError('Too many failed login attempts. Please try again later.');
+        setError(t('Too many failed login attempts. Please try again later.'));
       } else if (error.code === 'auth/invalid-credential') {
-        setError('Invalid email or password. Please check your credentials.');
+        setError(t('Invalid email or password. Please check your credentials.'));
       } else if (error.message) {
         setError(error.message);
       } else {
-        setError('Login failed. Please try again.');
+        setError(t('Login failed. Please try again.'));
       }
     } finally {
       setLoading(false);
@@ -93,7 +95,7 @@ const LoginForm = () => {
     setResetSuccess('');
 
     if (!resetEmail.trim()) {
-      setResetError('Email is required');
+      setResetError(t('Email is required'));
       return;
     }
 
@@ -101,7 +103,7 @@ const LoginForm = () => {
 
     try {
       await authService.resetPassword(resetEmail);
-      setResetSuccess('Password reset email sent! Please check your inbox and follow the instructions to reset your password.');
+      setResetSuccess(t('Password reset email sent! Please check your inbox and follow the instructions to reset your password.'));
       setResetError('');
       // Clear the form after 3 seconds and close modal
       setTimeout(() => {
@@ -112,13 +114,13 @@ const LoginForm = () => {
     } catch (error: any) {
       console.error('Password reset error:', error);
       if (error.code === 'auth/user-not-found') {
-        setResetError('No account found with this email address.');
+        setResetError(t('No account found with this email address.'));
       } else if (error.code === 'auth/invalid-email') {
-        setResetError('Invalid email address format.');
+        setResetError(t('Invalid email address format.'));
       } else if (error.code === 'auth/too-many-requests') {
-        setResetError('Too many requests. Please try again later.');
+        setResetError(t('Too many requests. Please try again later.'));
       } else {
-        setResetError('Failed to send reset email. Please try again.');
+        setResetError(t('Failed to send reset email. Please try again.'));
       }
     } finally {
       setResetLoading(false);
@@ -135,7 +137,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div dir='ltr' className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-md p-8 md:p-10 border border-slate-100">
         
         {/* Close button */}
@@ -151,8 +153,8 @@ const LoginForm = () => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-slate-900">Welcome Back</h2>
-          <p className="text-slate-500 mt-2">Sign in to your account</p>
+          <h2 className="text-3xl font-bold text-slate-900">{t('Welcome Back')}</h2>
+          <p className="text-slate-500 mt-2">{t('Sign in to your account')}</p>
         </div>
 
         {/* Error Alert */}
@@ -176,13 +178,13 @@ const LoginForm = () => {
           {/* Email Address */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Email Address <span className="text-red-500">*</span>
+              {t('Email Address')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type="email" 
-                placeholder="Enter your email" 
+                placeholder={t('Enter your email')} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
@@ -195,13 +197,13 @@ const LoginForm = () => {
           {/* Password */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-900 ml-1">
-              Password <span className="text-red-500">*</span>
+              {t('Password')} <span className="text-red-500">*</span>
             </label>
             <div className="relative group">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
               <input 
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password" 
+                placeholder={t('Enter your password')} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -227,7 +229,7 @@ const LoginForm = () => {
               disabled={loading}
               className="text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50"
             >
-              Forgot your password?
+              {t('Forgot your password?')}
             </button>
           </div>
 
@@ -240,22 +242,22 @@ const LoginForm = () => {
             {loading ? (
               <>
                 <Loader2 size={20} className="animate-spin" />
-                Signing In...
+                {t('Signing In...')}
               </>
             ) : (
-              'Sign In'
+              t('Sign In')
             )}
           </button>
 
           {/* Footer */}
           <div className="text-center mt-8">
             <p className="text-slate-500 font-medium">
-              Don't have an account?{' '}
+              {t("Don't have an account?")}{' '}
               <Link 
                 to="/register" 
                 className={`text-blue-500 font-bold hover:text-blue-600 hover:underline ${loading ? 'pointer-events-none opacity-50' : ''}`}
               >  
-                Sign up     
+                {t('Sign up')}     
               </Link>
             </p>
           </div>
@@ -284,9 +286,9 @@ const LoginForm = () => {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lock className="text-blue-600" size={28} />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">Reset Password</h2>
+              <h2 className="text-2xl font-bold text-slate-900">{t('Reset Password')}</h2>
               <p className="text-slate-500 mt-2 text-sm">
-                Enter your email and we'll send you instructions to reset your password
+                {t("Enter your email and we'll send you instructions to reset your password")}
               </p>
             </div>
 
@@ -317,13 +319,13 @@ const LoginForm = () => {
               {/* Email Address */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-slate-900 ml-1">
-                  Email Address <span className="text-red-500">*</span>
+                  {t("Email Address")} <span className="text-red-500">*</span>
                 </label>
                 <div className="relative group">
                   <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                   <input 
                     type="email" 
-                    placeholder="Enter your email" 
+                    placeholder={t("Enter your email")} 
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     disabled={resetLoading}
@@ -342,10 +344,10 @@ const LoginForm = () => {
                 {resetLoading ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />
-                    Sending...
+                    {t("Sending...")}
                   </>
                 ) : (
-                  'Send Reset Link'
+                  t('Send Reset Link')
                 )}
               </button>
 
@@ -356,7 +358,7 @@ const LoginForm = () => {
                 disabled={resetLoading}
                 className="w-full text-slate-600 hover:text-slate-900 font-semibold py-2 transition-colors disabled:opacity-50"
               >
-                Back to Login
+                {t("Back to Login")}
               </button>
             </form>
           </div>

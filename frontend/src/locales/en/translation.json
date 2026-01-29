@@ -31,8 +31,8 @@
   "getStarted": "Get Started?",
   "joinThousands": "Join thousands of satisfied users and skilled professionals.",
   "signUpToday": "Sign up today to experience seamless service connections.",
-    "startHiringToday": "Start Hiring Today",
-    "becomeServiceProvider": "Become a Service Provider",
+  "startHiringToday": "Start Hiring Today",
+  "becomeServiceProvider": "Become a Service Provider",
 
     "Findyour": "Find your",
     "Expert": "Expert",
@@ -58,9 +58,10 @@
     "Browse our complete directory of skilled professionals and filter by specific skills, location, or rating.": "Browse our complete directory of skilled professionals and filter by specific skills, location, or rating.",
     "Browse All Workers": "Browse All Workers",
 
+
     "First name is required": "First name is required",
     "Last name is required": "Last name is required",
-    "email is required": "email is required",
+    "email is required": "Email is required",
     "Phone number is required": "Phone number is required",
     "Phone number must start with country code 964": "Phone number must start with country code 964",
     "Phone number must be 12 digits (964 + 9 digits)": "Phone number must be 12 digits (964 + 9 digits)",
@@ -84,6 +85,41 @@
     "Join as User": "Join as User",
     "Join as Worker": "Join as Worker",
     "I need workers": "I need workers",
-    "I'm a worker": "I'm a worker"
+    "I'm a worker": "I'm a worker",
+
+    "Email is required": "Email is required",
+    "Password is required": "Password is required",
+    "No account found with this email. Please sign up first.": "No account found with this email. Please sign up first.",
+    "Incorrect password. Please try again.": "Incorrect password. Please try again.",
+    "Invalid email address format.": "Invalid email address format.",
+    "Too many failed login attempts. Please try again later.": "Too many failed login attempts. Please try again later.",
+    "Invalid email or password. Please check your credentials.": "Invalid email or password. Please check your credentials.",
+    "Login failed. Please try again.": "Login failed. Please try again.",
+    "Password reset email sent! Please check your inbox and follow the instructions to reset your password.": "Password reset email sent! Please check your inbox and follow the instructions to reset your password.",
+    "No account found with this email address.": "No account found with this email address.",
+    "Too many requests. Please try again later.": "Too many requests. Please try again later.",
+    "Failed to send reset email. Please try again.": "Failed to send reset email. Please try again.",
+    "Welcome Back": "Welcome Back",
+    "Sign in to your account": "Sign in to your account",
+    "Enter your email": "Enter your email",
+    "Enter your password": "Enter your password",
+    "Forgot your password?": "Forgot your password?",
+    "Signing In...": "Signing In...",
+    "Sign In": "Sign In",
+    "Don't have an account?": "Don't have an account?",
+    "Sign up": "Sign up",
+    "Reset Password": "Reset Password",
+    "Enter your email and we'll send you instructions to reset your password": "Enter your email and we'll send you instructions to reset your password",
+    "Sending...": "Sending...",
+    "Send Reset Link": "Send Reset Link",
+    "Back to Login": "Back to Login",
+
+    "My Profile": "My Profile",
+    "Manage your account details": "Manage your account details",
+    "Location": "Location",
+    "Select your location": "Select your location",
+    "Save Changes": "Save Changes",
+    "Sign Out": "Sign Out"
     
+
 }

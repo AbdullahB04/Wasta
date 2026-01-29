@@ -187,7 +187,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div dir='ltr' className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-5xl p-8 md:p-12 border border-slate-100 transition-all duration-500 ease-in-out">
         {/* Back button */}
         <button
