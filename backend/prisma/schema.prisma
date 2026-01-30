@@ -7,39 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Let's start with just 2 basic tables to understand
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  phone     String?
-  address   String?
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
-  
-  @@map("users")
+  id          String   @id @default(cuid())
+  firebaseUid String   @unique
+  email       String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  phone       String?
+  address     String?
+  image       String?  
+  role        String   @default("USER")
+  createdAt   DateTime @default(now())
+  feedbacks   Feedback[]
+  @@map("users") 
 }
 
 model Worker {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  phone     String
-  address   String
-  bio       String?
-  role      String   @default("WORKER")
-  createdAt DateTime @default(now())
-  
+  id          String   @id @default(cuid())
+  firebaseUid String   @unique
+  email       String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  phone       String
+  address     String
+  position    String
+  image       String?
+  age         Int?
+  bio         String?
+  skills      String?
+  languages   String?
+  isActive    Boolean  @default(true) 
+  role        String   @default("WORKER")
+  createdAt   DateTime @default(now())
   @@map("workers")
   WorkerService WorkerService[]
+  feedbacks   Feedback[]
 }
 
 model Service {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) 
   name        String
-  description String?
   createdAt   DateTime @default(now())
   
   @@map("services")
@@ -57,4 +67,18 @@ model WorkerService {
 
   @@unique([workerId, serviceId])
   @@map("worker_services")
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  rating    Int      
+  comment   String?
+  userId    String
+  workerId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  worker    Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@map("feedbacks")
 }

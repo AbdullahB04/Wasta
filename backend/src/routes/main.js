@@ -4,166 +4,223 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// HOME PAGE ROUTE - Get stats for landing page
-router.get('/', async (req, res) => {
-    try {
-        // Get counts from database
-        const totalUsers = await prisma.user.count();
-        const totalWorkers = await prisma.worker.count();
-            
-        res.json({
-            success: true,
-            data: {
-            totalClients: totalUsers,
-            totalWorkers: totalWorkers,
-            message: 'Welcome to our service platform!'
-            }
-        })
-    } catch (error) {
-        console.error('Home route error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to load home page data'
-        });
-    }
-})
+// 1. GET ALL SERVICES (For the dropdown menu)
+router.get('/category', async (req, res) => {
+  try {
+    const services = await prisma.service.findMany({
+      select: {
+        id: true,
+        name: true
+      },
+      orderBy: {
+        id: 'asc'
+      }
+    });
+    res.json(services);
+  } catch (error) {
+    console.error('Services route error:', error);
+    res.status(500).json({ error: 'Failed to fetch services' });
+  }
+});
 
-// BROWSE WORKERS ROUTE - List all workers with basic info
-router.get('/browse', async (req,res) => {
-    const { search, address } = req.query
-    const category = req.query.category || null;
-    const where = {}
-    if (search && search.length > 0 && search.trim() !== '') {
-        where.OR = [
-            {  firstName: { contains: search.trim(), mode: 'insensitive' } },
-            {  lastName: { contains: search.trim(), mode: 'insensitive' } },
-        ]
-    }
-    if (address && address.length > 0 && address.trim() !== '') {
-        where.address = { contains: address.trim(), mode: 'insensitive' }
-    }
-    if (category && category.length > 0 && category.trim() !== '') {
-        where.services = {
-            some: {
-            service: {
-                name: { contains: category, mode: 'insensitive' }
-            }
-            }
-        };
-        }
-
-    try {
+// 2. GET ALL WORKERS
+router.get('/workers', async (req, res) => {
+  try {
     const workers = await prisma.worker.findMany({
-        where,
-        select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                phone: true,
-                address: true,
-                bio: true,
-            }
-        })
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        address: true,
+        image: true,
+        position: true,
+        isActive: true,
+        WorkerService: {
+          include: {
+            service: true
+          }
+        },
+        feedbacks: {
+          select: {
+            rating: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
 
-        res.json({
-            success: true,
-            data: {
-                workers: workers,
-                totalWorkers: workers.length,
-                filters: { search, address, category }
-            }
-        })
-    } catch (error) {
-        console.error('Browse route error:', error);
-        res.status(500).json({  
-            success: false,
-            error: 'Failed to load workers data'
-        });
-    }
-})
+    // Calculate average rating for each worker
+    const workersWithRating = workers.map(worker => {
+      const ratings = worker.feedbacks.map(f => f.rating);
+      const averageRating = ratings.length > 0 
+        ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+        : null;
+      
+      const { feedbacks, ...workerData } = worker;
+      return {
+        ...workerData,
+        averageRating: averageRating ? parseFloat(averageRating) : null,
+        totalFeedbacks: ratings.length
+      };
+    });
 
-// WORKER DETAIL ROUTE - Get detailed info for a specific worker
-router.get("/worker/:id", async (req,res) => {
-    const { id } = req.params;
+    console.log('✅ Fetched workers:', workersWithRating.length);
+    res.json(workersWithRating);
+  } catch (error) {
+    console.error('❌ Workers route error:', error);
+    res.status(500).json({ error: 'Failed to fetch workers' });
+  }
+});
 
+router.get('/workers/:id', async (req, res) => {
     try {
         const worker = await prisma.worker.findUnique({
-            where: { id },
+            where: {
+                id: req.params.id
+            },
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
                 phone: true,
                 address: true,
+                image: true,
+                position: true,
                 bio: true,
-
-                services: {
+                skills: true,
+                languages: true,
+                isActive: true,
+                WorkerService: {
                     include: {
-                        service: {
-                            select: {
-                                id: true,
-                                name: true,
-                                description: true
-                            }
-                        }
+                        service: true
+                    }
+                },
+                feedbacks: {
+                    select: {
+                        rating: true
                     }
                 }
             }
         });
 
-        if(!worker) {
-            return res.status(404).json({
-                success: false,
-                error: 'Worker not found'
-            });
+        if (!worker) {
+            return res.status(404).json({ error: 'Worker not found' });
         }
 
-        res.json({
-            success: true,
-            data: {
-                worker
-            }
-        });
+        // Calculate average rating
+        const ratings = worker.feedbacks.map(f => f.rating);
+        const averageRating = ratings.length > 0 
+            ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+            : null;
+        
+        const { feedbacks, ...workerData } = worker;
+        const workerWithRating = {
+            ...workerData,
+            averageRating: averageRating ? parseFloat(averageRating) : null,
+            totalFeedbacks: ratings.length
+        };
 
+        console.log('✅ Fetched worker:', workerWithRating.id);
+        res.json(workerWithRating);
     } catch (error) {
-        console.error('Worker detail route error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to load worker details'
-        });
+        console.error('❌ Worker by ID route error:', error);
+        res.status(500).json({ error: 'Failed to fetch worker' });
     }
 })
 
-// CATEGORIES ROUTE - List all service categories
-router.get('/categories', async (req, res) => {
+// 4. CREATE FEEDBACK
+router.post('/workers/:workerId/feedback', async (req, res) => {
     try {
-        const categories = await prisma.service.findMany({
-            select: {
-                id: true,
-                name: true,
-                description: true
-            }
-        });
+        const { workerId } = req.params;
+        const { userId, rating, comment } = req.body;
 
-        res.json({
-            success: true,
+        if (!userId || !rating) {
+            return res.status(400).json({ error: 'userId and rating are required' });
+        }
+
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        }
+
+        const feedback = await prisma.feedback.create({
             data: {
-                categories: categories,
-                totalCategories: categories.length
+                workerId,
+                userId,
+                rating,
+                comment: comment || null
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        image: true
+                    }
+                }
             }
         });
-    } catch (error) {
-        console.error('Categories route error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to load categories data'
-        });
-    }
-})
 
-router.get('/how-it-works', (req, res) => {
-    res.json('This route will explain how the service works.');
-})
+        console.log('✅ Created feedback:', feedback.id);
+        res.json(feedback);
+    } catch (error) {
+        console.error('❌ Create feedback error:', error);
+        res.status(500).json({ error: 'Failed to create feedback' });
+    }
+});
+
+// 5. GET FEEDBACKS FOR A WORKER
+router.get('/workers/:workerId/feedback', async (req, res) => {
+    try {
+        const { workerId } = req.params;
+
+        const feedbacks = await prisma.feedback.findMany({
+            where: {
+                workerId
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        image: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        console.log('✅ Fetched feedbacks for worker:', workerId, '- Count:', feedbacks.length);
+        res.json(feedbacks);
+    } catch (error) {
+        console.error('❌ Get feedbacks error:', error);
+        res.status(500).json({ error: 'Failed to fetch feedbacks' });
+    }
+});
+
+// 6. HOME PAGE STATS
+router.get('/', async (req, res) => {
+  try {
+    const totalWorkers = await prisma.worker.count();
+    const totalUsers = await prisma.user.count();
+    
+    res.json({
+      success: true,
+      data: {
+        totalWorkers,
+        totalUsers
+      }
+    });
+  } catch (error) {
+    console.error('Home route error:', error);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
 
 export default router;

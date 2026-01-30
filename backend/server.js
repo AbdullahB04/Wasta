@@ -1,29 +1,25 @@
-import express, { json } from 'express';
+import express from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
-import 'dotenv/config';
+import mainRoutes from './src/routes/main.js';
+import authRoutes from './src/routes/auth.js';
+import admin from 'firebase-admin';
+import serviceAccount from './firebase-admin-sdk.json' with { type: 'json' };
+// import prisma from './src/db/prisma.js'; // Import shared instance
 
+// Initialize Firebase Admin
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
-// Setup
 const app = express();
-const prisma = new PrismaClient();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Basic middleware
 app.use(cors());
-app.use(json());
+app.use(express.json({ limit: '10mb' }));
 
-// API route
-app.use('/', (await import('./src/routes/main.js')).default);
+app.use('/', mainRoutes); // This handles /workers
+app.use('/api/auth', authRoutes);
 
-// Start server
-app.listen(PORT, async () => {
-  try {
-    await prisma.$connect();
-    console.log('✅ Database connected');
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`🏠 Home route: http://localhost:${PORT}/`);
-  } catch (error) {
-    console.error('❌ Failed to start server:', error);
-  }
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });

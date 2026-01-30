@@ -4,10 +4,14 @@ import {
   Github,  
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/logo1.PNG'
+import logo from '../../assets/logo1.PNG';
+import { useTranslation } from 'react-i18next';
+
 
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-12">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -22,9 +26,9 @@ const Footer = () => {
 
           {/* 2. Navigation Links */}
           <nav className="flex flex-wrap justify-center gap-8 md:gap-12 text-sm font-medium text-slate-300">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            <Link to="/worker" className="hover:text-white transition-colors">Workers</Link>
-            <Link to="/category" className="hover:text-white transition-colors">Categories</Link>
+            <Link to="/" className="hover:text-white transition-colors">{t("home")}</Link>
+            <Link to="/worker" className="hover:text-white transition-colors">{t("workers")}</Link>
+            <Link to="/category" className="hover:text-white transition-colors">{t("categories")}</Link>
             {/* <Link to="/about" className="hover:text-white transition-colors">About</Link> */}
           </nav>
 

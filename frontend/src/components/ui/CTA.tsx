@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import {Link} from 'react-router-dom';
+import i18n from '../../i18n';
 
 
 const CallToAction = () => {
@@ -35,13 +36,13 @@ const CallToAction = () => {
 
             {/* Heading - Dark Text for Contrast */}
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
-              Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Get Started?</span>
+              {i18n.t('readyTo')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">{i18n.t('getStarted')}</span>
             </h2>
 
             {/* Description - Slate-600 for readability */}
             <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-              Join thousands of satisfied users and skilled professionals. 
-              Sign up today to experience seamless service connections.
+              {i18n.t('joinThousands')}
+              {i18n.t('signUpToday')}
             </p>
 
             {/* Buttons - Matches Hero Style */}
@@ -54,7 +55,7 @@ const CallToAction = () => {
                 whileTap={{ scale: 0.98 }}
                 className="group relative w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
               >
-                Start Hiring Today
+                {i18n.t('startHiringToday')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </motion.button>
               </Link>
@@ -66,7 +67,7 @@ const CallToAction = () => {
                 whileTap={{ scale: 0.98 }}
                 className="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-100 text-slate-600 font-bold rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all"
               >
-                Become a Service Provider
+                {i18n.t('becomeServiceProvider')}
               </motion.button>
               </Link>
 
