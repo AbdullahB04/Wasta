@@ -3,6 +3,8 @@ import { MapPin, Clock, Star, MessageCircle, User, MessageSquare, X } from 'luci
 import { LiaTelegramPlane } from "react-icons/lia";
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 interface WorkerType {
   id: string;
@@ -39,6 +41,7 @@ interface WorkerProfileModalProps {
 
 const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
   usePageTitle('Worker Profile');
+  const { t } = useTranslation();
   const { dbUser } = useAuth();
   const [worker, setWorker] = useState<WorkerType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -160,7 +163,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500">Loading worker data...</div>
+        <div className="text-slate-500">{t("Loading worker data...")}</div>
       </div>
     );
   }
@@ -168,14 +171,14 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
   if (!worker) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500">Worker not found</div>
+        <div className="text-slate-500">{t("Worker not found")}</div>
       </div>
     );
   }
 
   return (
     // Main Container with scrolling fix
-    <div dir='ltr' className="flex flex-col h-full max-h-[80vh] overflow-y-auto px-2 pb-2 scrollbar-hide">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="flex flex-col h-full max-h-[80vh] overflow-y-auto px-2 pb-2 scrollbar-hide">
       
       <div className="p-4 sm:p-6">
         
@@ -209,12 +212,12 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                       <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">
                         <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                         <span className="font-bold text-slate-700 text-sm">{worker.averageRating}</span>
-                        <span className="text-xs text-slate-500">({worker.totalFeedbacks} reviews)</span>
+                        <span className="text-xs text-slate-500">({worker.totalFeedbacks} {t("reviews")})</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
                         <Star className="w-4 h-4 text-slate-400" />
-                        <span className="font-medium text-slate-500 text-sm">No ratings yet</span>
+                        <span className="font-medium text-slate-500 text-sm">{t("No ratings yet")}</span>
                       </div>
                     )}
                 </div>
@@ -228,7 +231,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     <MapPin className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Location</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t("Location")}</p>
                     <p className="text-sm font-semibold text-slate-700 truncate">{worker?.address}</p>
                 </div>
             </div>
@@ -237,9 +240,9 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     <Clock className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Availability</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t("Availability")}</p>
                     <p className={`text-sm font-semibold truncate ${worker?.isActive ? 'text-green-600' : 'text-slate-400'}`}>
-                      {worker?.isActive ? 'Available Today' : 'Not Available'}
+                      {worker?.isActive ? t("Available Today") : t("Not Available")}
                     </p>
                 </div>
             </div>
@@ -247,9 +250,9 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
 
         {/* 3. Bio Text */}
         <div className="mb-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide">About</h3>
+            <h3 className="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide">{t("About")}</h3>
             <p className="text-slate-500 text-sm leading-relaxed">
-                {worker?.bio || "No description available."}
+                {worker?.bio || (t("No description available."))}
             </p>
         </div>
 
@@ -257,7 +260,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
         <div className="space-y-4 mb-6 border-t border-slate-100 pt-6">
             {/* Skills */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Skills:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">{t('skills')}</span>
                 <div className="flex flex-wrap gap-2">
                     {skills.length > 0 ? (
                       skills.map(skill => (
@@ -266,14 +269,14 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-sm text-slate-400 italic">No skills listed</span>
+                      <span className="text-sm text-slate-400 italic">{t("No skills listed")}</span>
                     )}
                 </div>
             </div>
 
             {/* Languages */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Languages:</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">{t("Languages")}</span>
                 <div className="flex flex-wrap gap-2">
                     {enabledLanguages.length > 0 ? (
                       enabledLanguages.map(lang => (
@@ -282,14 +285,14 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-sm text-slate-400 italic">No languages listed</span>
+                      <span className="text-sm text-slate-400 italic">{t("No languages listed")}</span>
                     )}
                 </div>
             </div>
 
             {/* Phone */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">Phone :</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">{t("phone")}</span>
                 <span className="text-sm text-slate-700 font-medium">{formatPhone(worker?.phone)}</span>
             </div>
         </div>
@@ -309,7 +312,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
               title={!dbUser ? 'Please log in to leave feedback' : dbUser.role === 'WORKER' ? 'Workers cannot leave feedback' : ''}
             >
               <MessageSquare className="w-6 h-6" />
-              Leave Feedback
+              {t("Leave Feedback")}
             </button>
 
             {/* WhatsApp & Telegram Buttons */}
@@ -321,7 +324,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     ? 'bg-green-500 hover:bg-green-600 text-white shadow-green-200 active:scale-95'
                     : 'bg-slate-300 text-slate-500 cursor-not-allowed'
                 }`}
-                title={!worker?.isActive ? 'Worker is not available' : ''}
+                title={!worker?.isActive ? t("Worker is not available") : ''}
                 onClick={() => {
                   const cleanPhone = worker?.phone.replace(/\D/g, ''); // Remove all non-digits
                   window.open(`https://wa.me/${cleanPhone}`, '_blank');
@@ -337,7 +340,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
                     ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-200 active:scale-95'
                     : 'bg-slate-300 text-slate-500 cursor-not-allowed'
                 }`}
-                title={!worker?.isActive ? 'Worker is not available' : ''}
+                title={!worker?.isActive ? t("Worker is not available") : ''}
                 onClick={() => {
                   const cleanPhone = worker?.phone.replace(/\D/g, ''); // Remove all non-digits
                   window.open(`https://t.me/+${cleanPhone}`, '_blank');
@@ -364,11 +367,11 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
             </button>
 
             {/* Modal Header */}
-            <h2 className="text-xl font-bold text-slate-900 mb-4">Leave Your Feedback</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-4">{t("Leave Feedback")}</h2>
 
             {/* Rating Section */}
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Your Rating</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">{t("Your Rating")}</label>
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -395,11 +398,11 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
 
             {/* Comment Section */}
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Additional Comments (Optional)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">{t("Additional Comments (Optional)")}</label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Share your experience..."
+                placeholder={t("Share your experience...")}
                 className="w-full h-24 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
               />
             </div>
@@ -410,13 +413,13 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
               disabled={feedbackRating === 0 || isSubmitting}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-2.5 rounded-xl font-bold text-base shadow-lg transition-all active:scale-95 mb-4"
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+              {isSubmitting ? (t("Submitting...")) : t("Submit Feedback")}
             </button>
 
             {/* Previous Feedbacks */}
             {feedbacks.length > 0 && (
               <div className="border-t border-slate-200 pt-3">
-                <h3 className="text-base font-bold text-slate-900 mb-3">Previous Feedbacks ({feedbacks.length})</h3>
+                <h3 className="text-base font-bold text-slate-900 mb-3">{t("Previous Feedbacks")} ({feedbacks.length})</h3>
                 <div className="max-h-48 overflow-y-auto space-y-2">
                   {feedbacks.map((fb) => (
                     <div key={fb.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">

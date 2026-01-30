@@ -15,6 +15,8 @@ import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from "../hooks/use-toast";
 import Avatar from '@mui/material/Avatar';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 interface FeedbackType {
   id: string;
@@ -32,6 +34,7 @@ interface FeedbackType {
 
 const WorkerDashboard = () => {
   usePageTitle("Worker Dashboard");
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { dbUser } = useAuth();
@@ -257,10 +260,10 @@ const WorkerDashboard = () => {
   };
 
   return (
-    <div dir="ltr" className="min-h-screen bg-slate-50/50 pb-20">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50 pb-20">
       
       {/* 1. Glass Header */}
-      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <div dir="ltr" className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -270,14 +273,13 @@ const WorkerDashboard = () => {
                 </Button>
               {/* </Link> */}
               <div>
-                <h1 className="text-xl font-bold text-slate-900">My Dashboard</h1>
-                <p className="text-sm text-slate-500">Manage your professional profile</p>
+                <h1 className="text-xl font-bold text-slate-900">{t('My Dashboard')}</h1>
               </div>
             </div>
             
             <div className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-               {isActive ? "Profile Active" : "Profile Hidden"}
+               {isActive ? t("Profile Active") : t("Profile Hidden")}
             </div>
           </div>
         </div>
@@ -353,11 +355,8 @@ const WorkerDashboard = () => {
                 <div className="flex items-center justify-between px-1">
                   <div className="space-y-0.5">
                     <Label htmlFor="active-status" className="text-base font-semibold text-slate-700">
-                      Online Status
+                      {t("Online Status")}
                     </Label>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Visible to clients
-                    </p>
                   </div>
                     <Switch
                       id="active-status"
@@ -380,8 +379,8 @@ const WorkerDashboard = () => {
                     <MessageSquare className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Client Feedbacks</CardTitle>
-                    <CardDescription>See what clients are saying about you</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("Client Feedbacks")}</CardTitle>
+                    <CardDescription>{t("See what clients are saying about you")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -428,8 +427,8 @@ const WorkerDashboard = () => {
                 ) : (
                   <div className="text-center py-8">
                     <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-500 text-sm font-medium">No feedbacks yet</p>
-                    <p className="text-slate-400 text-xs mt-1">Client reviews will appear here</p>
+                    <p className="text-slate-500 text-sm font-medium">{t("No feedbacks yet")}</p>
+                    <p className="text-slate-400 text-xs mt-1">{t("Client reviews will appear here")}</p>
                   </div>
                 )}
               </CardContent>
@@ -447,30 +446,30 @@ const WorkerDashboard = () => {
                     <User className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Personal Details</CardTitle>
-                    <CardDescription>Update your basic contact information.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("Personal Details")}</CardTitle>
+                    <CardDescription>{t("Update your basic contact information.")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-5 pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-slate-700">First Name</Label>
+                    <Label htmlFor="firstName" className="text-slate-700">{t("First Name")}</Label>
                     <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-slate-700">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-slate-700">{t("Last Name")}</Label>
                     <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="age" className="text-slate-700">Age</Label>
+                    <Label htmlFor="age" className="text-slate-700">{t("Age")}</Label>
                     <Input id="age" name="age" type="number" value={formData.age} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber" className="text-slate-700">Phone Number</Label>
+                    <Label htmlFor="phoneNumber" className="text-slate-700">{t("Phone Number")}</Label>
                     <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                   </div>
                 </div>
@@ -479,7 +478,7 @@ const WorkerDashboard = () => {
                 <div className="space-y-2">
                   <Label htmlFor="location" className="text-slate-700 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-slate-500" />
-                    Location
+                    {t("Location")}
                   </Label>
                   <select 
                     name="location" 
@@ -488,7 +487,7 @@ const WorkerDashboard = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-white"
                   >
-                    <option value="" disabled>Select your location</option>
+                    <option value="" disabled>{t("Select your location")}</option>
                     {availableLocations.map((loc) => (
                       <option key={loc} value={loc}>
                         {loc}
@@ -501,7 +500,7 @@ const WorkerDashboard = () => {
                 <div className="space-y-2">
                   <Label htmlFor="position" className="text-slate-700 flex items-center gap-2">
                     <Briefcase className="w-4 h-4 text-slate-500" />
-                    Profession
+                    {t("Profession")}
                   </Label>
                   <select 
                     name="position" 
@@ -510,7 +509,7 @@ const WorkerDashboard = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-white"
                   >
-                    <option value="" disabled>Select your profession</option>
+                    <option value="" disabled>{t("Select your profession")}</option>
                     <option value="Plumber">Plumber</option>
                     <option value="Electrician">Electrician</option>
                     <option value="Carpenter">Carpenter</option>
@@ -525,7 +524,7 @@ const WorkerDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description" className="text-slate-700">Description</Label>
+                  <Label htmlFor="description" className="text-slate-700">{t("Description")}</Label>
                   <Input id="description" name="description" value={formData.description} onChange={handleInputChange} className="border-slate-200 focus-visible:ring-blue-500/20" />
                 </div>
                 
@@ -540,8 +539,8 @@ const WorkerDashboard = () => {
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Languages</CardTitle>
-                    <CardDescription>Select the languages you can speak fluently.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("Languages")}</CardTitle>
+                    <CardDescription>{t("Select the languages you can speak fluently.")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -577,8 +576,8 @@ const WorkerDashboard = () => {
                     <Briefcase className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">Professional Skills</CardTitle>
-                    <CardDescription>Add skills to help clients find you.</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("Professional Skills")}</CardTitle>
+                    <CardDescription>{t("Add skills to help clients find you.")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -588,11 +587,11 @@ const WorkerDashboard = () => {
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="e.g. Pipe Fitting"
+                    placeholder={t("e.g. Pipe Fitting")}
                     className="flex-1 border-slate-200 focus-visible:ring-blue-500/20"
                   />
                   <Button onClick={addSkill} className="bg-slate-900 hover:bg-slate-800 text-white shrink-0">
-                    <Plus className="h-4 w-4 mr-2" /> Add
+                    <Plus className="h-4 w-4 mr-2" /> {t("Add")}
                   </Button>
                 </div>
 
@@ -614,7 +613,7 @@ const WorkerDashboard = () => {
                     </Badge>
                   ))}
                   {skills.length === 0 && (
-                    <p className="text-sm text-slate-400 italic">No skills added yet. Add some above!</p>
+                    <p className="text-sm text-slate-400 italic">{t("No skills added yet. Add some above!")}</p>
                   )}
                 </div>
               </CardContent>
@@ -628,7 +627,7 @@ const WorkerDashboard = () => {
                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-95"
                >
                  <Save className="h-4 w-4 mr-2" />
-                 Save Changes
+                 {t("Save Changes")}
                </Button>
                
                <Button 
@@ -638,7 +637,7 @@ const WorkerDashboard = () => {
                  className="flex-1 sm:flex-initial border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all active:scale-95"
                >
                  <LogOut className="h-4 w-4 mr-2" />
-                 Sign Out
+                 {t("Sign Out")}
                </Button>
             </div>
             

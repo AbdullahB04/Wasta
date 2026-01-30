@@ -207,7 +207,7 @@ const Worker = () => {
   }
 
   return (
-    <div {...(i18n.language === 'ar' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50">
 
       {/* Navbar Wrapper */}
       <div className="bg-white border-b border-slate-100">
