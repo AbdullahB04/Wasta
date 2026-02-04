@@ -186,7 +186,6 @@ const UserDashboard = () => {
           </Button>
           <div>
             <h1 className="text-xl font-bold text-slate-900">{t('My Profile')}</h1>
-            <p className="text-xs text-slate-500 font-medium">{t('Manage your account details')}</p>
           </div>
         </div>
       </header>

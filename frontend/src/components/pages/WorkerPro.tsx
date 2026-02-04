@@ -58,6 +58,32 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
   const [skills, setSkills] = useState<string[]>([]);
   const [languages, setLanguages] = useState<{[key: string]: boolean}>({});
 
+  // Translation helper for positions
+  const getPositionTranslation = (position?: string) => {
+    if (!position) return '';
+    const positionMap: { [key: string]: string } = {
+     'plumbing': 'plumbing',
+      'plumber': 'plumbing',
+      'electrical': 'electrical',
+      'electrician': 'electrical',
+      'carpenter': 'carpenter',
+      'carpentry': 'carpenter',
+      'painting': 'painting',
+      'painter': 'painting',
+      'cleaning': 'cleaning',
+      'cleaner': 'cleaning',
+      'gardening': 'gardening',
+      'gardener': 'gardening',
+      'landscaping': 'landscaping',
+      'moving': 'moving',
+      'mover': 'moving',
+      'mechanic': 'mechanic',
+      'other': 'other'
+    };
+    const key = position.toLowerCase().trim();
+    return positionMap[key] ? t(positionMap[key]) : position;
+  };
+
   useEffect(() => {
     const fetchWorker = async () => {
       try {
@@ -204,7 +230,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
             <div className="flex-1 space-y-2 pt-2 text-center sm:text-left">
                 <div>
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">{worker?.firstName} {worker?.lastName}</h2>
-                    <p className="text-lg text-blue-600 font-medium">{worker?.position}</p>
+                    <p className="text-lg text-blue-600 font-medium">{getPositionTranslation(worker?.position)}</p>
                 </div>
                 
                 <div className="flex items-center justify-center sm:justify-start gap-3">
@@ -276,7 +302,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
 
             {/* Languages */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">{t("Languages")}</span>
+                <span className="text-xs font-bold text-slate-400 uppercase w-20 shrink-0 mt-1">{t("language")}</span>
                 <div className="flex flex-wrap gap-2">
                     {enabledLanguages.length > 0 ? (
                       enabledLanguages.map(lang => (

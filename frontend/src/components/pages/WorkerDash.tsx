@@ -447,7 +447,6 @@ const WorkerDashboard = () => {
                   </div>
                   <div>
                     <CardTitle className="text-lg font-bold text-slate-900">{t("Personal Details")}</CardTitle>
-                    <CardDescription>{t("Update your basic contact information.")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -510,16 +509,16 @@ const WorkerDashboard = () => {
                     className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 bg-white"
                   >
                     <option value="" disabled>{t("Select your profession")}</option>
-                    <option value="Plumber">Plumber</option>
-                    <option value="Electrician">Electrician</option>
-                    <option value="Carpenter">Carpenter</option>
-                    <option value="Painter">Painter</option>
-                    <option value="Cleaner">Cleaner</option>
-                    <option value="Gardener">Gardener</option>
-                    <option value="Gardening">Gardening</option>
-                    <option value="Mover">Mover</option>
-                    <option value="Mechanic">Mechanic</option>
-                    <option value="Other">Other</option>
+                    <option value="Plumber">{t('plumbing')}</option>
+                    <option value="Electrician">{t('electrical')}</option>
+                    <option value="Carpenter">{t('carpenter')}</option>
+                    <option value="Painter">{t('painting')}</option>
+                    <option value="Cleaner">{t('cleaning')}</option>
+                    <option value="Gardener">{t('gardening')}</option>
+                    <option value="Gardening">{t('gardening')}</option>
+                    <option value="Mover">{t('moving')}</option>
+                    <option value="Mechanic">{t('mechanic')}</option>
+                    <option value="Other">{t('other')}</option>
                   </select>
                 </div>
 
@@ -539,7 +538,7 @@ const WorkerDashboard = () => {
                     <Globe className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">{t("Languages")}</CardTitle>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("language")}</CardTitle>
                     <CardDescription>{t("Select the languages you can speak fluently.")}</CardDescription>
                   </div>
                 </div>
@@ -576,7 +575,7 @@ const WorkerDashboard = () => {
                     <Briefcase className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg font-bold text-slate-900">{t("Professional Skills")}</CardTitle>
+                    <CardTitle className="text-lg font-bold text-slate-900">{t("skills")}</CardTitle>
                     <CardDescription>{t("Add skills to help clients find you.")}</CardDescription>
                   </div>
                 </div>

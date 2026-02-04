@@ -51,6 +51,25 @@ const RegistrationForm = () => {
     name: string
   }
   const [services, setServices] = useState<Service[]>([]);
+  
+  // Translation helper for category names
+  const getCategoryTranslation = (categoryName: string) => {
+    const categoryMap: { [key: string]: string } = {
+      'plumbing': 'plumbing',
+      'electrical': 'electrical',
+      'carpentry': 'carpenter',
+      'carpenter': 'carpenter',
+      'painting': 'painting',
+      'cleaning': 'cleaning',
+      'gardening': 'gardening',
+      'landscaping': 'landscaping',
+      'moving': 'moving',
+      'mechanic': 'mechanic',
+      'other': 'other'
+    };
+    const key = categoryName.toLowerCase().trim();
+    return categoryMap[key] ? t(categoryMap[key]) : categoryName;
+  };
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -71,7 +90,6 @@ const RegistrationForm = () => {
     }
     fetchServices();
   }, [])
-  // const positions = ['Plumber', 'Electrician', 'Carpenter', 'Mechanic', 'Painter'];
 
   // Reset form when role changes
   const handleRoleChange = (newRole: 'client' | 'worker') => {
@@ -368,7 +386,7 @@ const RegistrationForm = () => {
                 >
                   <option value="" className="text-slate-400">{t('Select your profession')}</option>
                   {services.map((service) => (
-                    <option key={service.id} value={service.id}>{service.name}</option>
+                    <option key={service.id} value={service.id}>{getCategoryTranslation(service.name)}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />

@@ -50,6 +50,32 @@ const Worker = () => {
   });
   const [selectedCity, setSelectedCity] = useState("all");
 
+  // Translation helper for positions
+  const getPositionTranslation = (position?: string) => {
+    if (!position) return '';
+    const positionMap: { [key: string]: string } = {
+      'plumbing': 'plumbing',
+      'plumber': 'plumbing',
+      'electrical': 'electrical',
+      'electrician': 'electrical',
+      'carpentry': 'carpenter',
+      'carpenter': 'carpenter',
+      'painting': 'painting',
+      'painter': 'painting',
+      'cleaning': 'cleaning',
+      'cleaner': 'cleaning',
+      'gardening': 'gardening',
+      'gardener': 'gardening',
+      'landscaping': 'landscaping',
+      'moving': 'moving',
+      'mover': 'moving',
+      'mechanic': 'mechanic',
+      'other': 'other'
+    };
+    const key = position.toLowerCase().trim();
+    return positionMap[key] ? t(positionMap[key]) : position;
+  };
+
   // Check if coming from category page
   const isFromCategory = searchParams.has('category');
 
@@ -68,15 +94,15 @@ const Worker = () => {
   }, []);
 
   const categories = [
-    { value: 'plumbing', label: 'Plumber' },
-    { value: 'electrical', label: 'Electrician' },
-    { value: 'carpenter', label: 'Carpenter' },
-    { value: 'painting', label: 'Painter' },
-    { value: 'cleaning', label: 'Cleaner' },
-    { value: 'gardening', label: 'Gardener' },
-    { value: 'moving', label: 'Mover' },
-    { value: 'mechanic', label: 'Mechanic' },
-    { value: 'other', label: 'Other' },
+    { value: 'plumbing', label: t('plumbing') },
+    { value: 'electrical', label: t('electrical') },
+    { value: 'carpenter', label: t('carpenter') },
+    { value: 'painting', label: t('painting') },
+    { value: 'cleaning', label: t('cleaning') },
+    { value: 'gardening', label: t('gardening') },
+    { value: 'moving', label: t('moving') },
+    { value: 'mechanic', label: t('mechanic') },
+    { value: 'other', label: t('other') },
   ];
 
   // Get unique cities from workers
@@ -87,8 +113,21 @@ const Worker = () => {
                          worker.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          worker.position?.toLowerCase().includes(searchTerm.toLowerCase());
     
+    // Map category to position for filtering
+    const categoryToPosition: { [key: string]: string[] } = {
+      'plumbing': ['plumbing', 'plumber'],
+      'electrical': ['electrical', 'electrician'],
+      'carpenter': ['carpenter', 'carpentry'],
+      'painting': ['painting', 'painter'],
+      'cleaning': ['cleaning', 'cleaner'],
+      'gardening': ['gardening', 'gardener', 'landscaping'],
+      'moving': ['moving', 'mover'],
+      'mechanic': ['mechanic'],
+      'other': ['other']
+    };
+    
     const matchesCategory = selectedCategory === "all" || 
-                           worker.position?.toLowerCase() === selectedCategory.toLowerCase();
+                           (worker.position && categoryToPosition[selectedCategory]?.includes(worker.position.toLowerCase()));
     
     const matchesCity = selectedCity === "all" || worker.address === selectedCity;
     
@@ -115,10 +154,10 @@ const Worker = () => {
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link to="/category" className="flex items-center gap-2 text-slate-700 hover:text-blue-600 transition-colors">
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold">Back to Categories</span>
+              <span className="font-semibold">{t('Back to Categories')}</span>
             </Link>
             <h1 className="text-xl font-bold text-slate-900 capitalize">
-              {selectedCategory} Professionals
+              {t('Professionals')}
             </h1>
             <div className="w-32"></div> {/* Spacer for centering */}
           </div>
@@ -167,7 +206,7 @@ const Worker = () => {
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
-                      <span className="text-sm text-slate-700 font-medium">{worker.position || 'N/A'}</span>
+                      <span className="text-sm text-slate-700 font-medium">{getPositionTranslation(worker.position) || 'N/A'}</span>
                     </div>
                     
                     <div className="flex items-center gap-3">
@@ -195,9 +234,9 @@ const Worker = () => {
             </div>
           ) : (
             <div className="text-center py-24">
-              <p className="text-slate-500 text-xl">No {selectedCategory} professionals found</p>
+              <p className="text-slate-500 text-xl">{t('No professionals found')}</p>
               <Link to="/category" className="inline-block mt-6 text-blue-600 hover:text-blue-700 font-semibold">
-                ← Back to Categories
+                ← {t('Back to Categories')}
               </Link>
             </div>
           )}
@@ -207,7 +246,7 @@ const Worker = () => {
   }
 
   return (
-    <div {...(i18n.language === 'ar' ? { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50">
+    <div {...(i18n.language === 'ar' || i18n.language === 'ku' ?  { dir: 'rtl' } : { dir: 'ltr' })} className="min-h-screen bg-slate-50/50">
 
       {/* Navbar Wrapper */}
       <div className="bg-white border-b border-slate-100">
@@ -240,7 +279,6 @@ const Worker = () => {
           </div>
     </NavBody>
       </div>
-
       {/* Page Header & Search Section */}
       <section className="relative pt-16 pb-12 px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-64 bg-blue-100/50 blur-[100px] -z-10 rounded-full" />
@@ -346,7 +384,7 @@ const Worker = () => {
               <div className="space-y-3 mb-4">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
-                  <span className="text-sm text-slate-700 font-medium">{worker.position || 'N/A'}</span>
+                  <span className="text-sm text-slate-700 font-medium">{getPositionTranslation(worker.position) || 'N/A'}</span>
                 </div>
                 
                 <div className="flex items-center gap-3">

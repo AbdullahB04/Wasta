@@ -84,6 +84,37 @@
     "Join as User": "Join as User",
     "Join as Worker": "Join as Worker",
     "I need workers": "I need workers",
-    "I'm a worker": "I'm a worker"
-    
+    "I'm a worker": "I'm a worker",
+
+    "Welcome Back": "Welcome Back", 
+    "Sign in to your account": "Sign in to your account",
+    "Enter your email": "Enter your email",
+    "Enter your password": "Enter your password",
+    "Forgot your password?": "Forgot your password?",
+    "Don't have an account?": "Don't have an account?",
+    "Sign In": "Sign In",
+    "Signing In...": "Signing In...",
+    "Sign up": "Sign up",
+    "Reset Password": "Reset Password",
+    "Enter your email and we'll send you instructions to reset your password": "Enter your email and we'll send you instructions to reset your password",
+    "Sending...": "Sending...",
+    "Send Reset Link": "Send Reset Link",
+    "Back to Login": "Back to Login",
+
+    "plumbing": "Plumbing",
+    "electrical": "Electrical",
+    "painting": "Painting",
+    "moving": "Moving",
+    "cleaning": "Cleaning",
+    "landscaping": "Landscaping",
+    "gardening": "Gardening",
+    "carpenter": "Carpenter",
+    "carpentry": "Carpentry",
+    "mechanic": "Mechanic",
+    "other": "Other",
+
+    "reviews": "reviews",
+    "No ratings yet": "No ratings yet",
+    "Worker not found": "Worker not found"
+
 }

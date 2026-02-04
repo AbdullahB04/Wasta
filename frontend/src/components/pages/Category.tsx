@@ -57,6 +57,26 @@ const Category = () => {
     const key = name.toLowerCase();
     return iconMap[key] || <Scissors className="w-10 h-10 text-blue-500" />;
   };
+
+  // Translate category names from database
+  const getCategoryTranslation = (categoryName: string) => {
+    const categoryMap: { [key: string]: string } = {
+      'plumbing': 'plumbing',
+      'electrical': 'electrical',
+      'carpenter': 'carpenter',
+      'painting': 'painting',
+      'cleaning': 'cleaning',
+      'gardening': 'gardening',
+      'landscaping': 'landscaping',
+      'moving': 'moving',
+      'mechanic': 'mechanic',
+      'other': 'other',
+    };
+    
+    const key = categoryName.toLowerCase();
+    return categoryMap[key] ? t(categoryMap[key]) : categoryName;
+  };
+
     const navItems = [
     {
       name: t('home'),
@@ -142,7 +162,7 @@ const Category = () => {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block w-12 h-12 border-8 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-500 mt-4">Loading categories...</p>
+            <p className="text-slate-500 mt-4">{t('Loading categories...')}</p>
           </div>
         ) : categories.length > 0 ? (
           <motion.div 
@@ -174,7 +194,7 @@ const Category = () => {
                       <div className="mb-6 p-4 bg-slate-50 rounded-2xl group-hover:scale-110 transition-transform duration-300">
                         {getIconForCategory(cat.name)}
                       </div>
-                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{cat.name}</h3>
+                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{getCategoryTranslation(cat.name)}</h3>
                       
                       <span className="text-blue-600 font-semibold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
                         {t('View Professionals')} <ArrowRight className="w-4 h-4" />
