@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "dev": "nodemon server.js",
+    "create-admin": "node createAdmin.js",
+    "clean": "node cleanServices.js",
+    "reset": "node resetServices.js",
+    "test-db": "node test-db.js"
+  }
+}
