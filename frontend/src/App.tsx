@@ -14,6 +14,7 @@ import WorkerDashboard from './components/pages/WorkerDash';
 import WorkerDashboardK from './components/pages/WorkerDashK';
 import UserDashboard from './components/pages/UserDash';
 import UserDashboardK from './components/pages/UserDashK';
+import AdminDashboard from './components/pages/AdminDash';
 
 
 export default function App() {
@@ -36,6 +37,8 @@ export default function App() {
 
         <Route path="/worker/dashboard" element={<WorkerDashboard />} />
         <Route path="/worker/dashboardK" element={<WorkerDashboardK />} />
+
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/LoginK" element={<LoginK />} />

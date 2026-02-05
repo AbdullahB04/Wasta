@@ -18,7 +18,7 @@ model User {
   phone       String?
   address     String?
   image       String?  
-  role        String   @default("USER")
+  role        String   @default("USER") // USER or ADMIN
   createdAt   DateTime @default(now())
   feedbacks   Feedback[]
   @@map("users") 

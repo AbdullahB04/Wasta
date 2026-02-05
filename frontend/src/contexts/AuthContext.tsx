@@ -4,17 +4,18 @@ import { auth } from '../config/firebase';
 
 // Define types for database user
 export interface DbUser {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   position?: string;
   image?: string;
-  phone: string;
-  address: string;
+  phone?: string;
+  address?: string;
   bio?: string;
   skills?: string;
   languages?: string;
-  isActive: boolean; // Add this line
+  isActive?: boolean;
+  role: string; // USER, WORKER, or ADMIN
 }
 
 // Define the context type

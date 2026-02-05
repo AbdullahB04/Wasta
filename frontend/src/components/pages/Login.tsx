@@ -14,6 +14,7 @@ import authService from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { auth } from '../../config/firebase';
 
 const LoginForm = () => {
   usePageTitle('Login');
@@ -55,8 +56,33 @@ const LoginForm = () => {
       
       console.log('✅ Login successful');
 
-      // No need to call refreshUser() - onAuthStateChanged will handle it
-      // Just navigate
+      // Wait a bit for the user data to be fetched by onAuthStateChanged
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Refresh user to get the latest data
+      await refreshUser();
+      
+      // Check if user is admin and redirect accordingly
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        const response = await fetch('http://localhost:3000/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          if (userData.role === 'ADMIN') {
+            navigate('/admin/dashboard');
+            return;
+          }
+        }
+      }
+      
+      // Workers and regular users go to home page
       navigate('/');
       
     } catch (error: any) {

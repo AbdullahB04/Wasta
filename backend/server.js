@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mainRoutes from './src/routes/main.js';
 import authRoutes from './src/routes/auth.js';
+import adminRoutes from './src/routes/admin.js';
 import admin from 'firebase-admin';
 import serviceAccount from './firebase-admin-sdk.json' with { type: 'json' };
 // import prisma from './src/db/prisma.js'; // Import shared instance
@@ -19,6 +20,7 @@ app.use(express.json({ limit: '10mb' }));
 
 app.use('/', mainRoutes); // This handles /workers
 app.use('/api/auth', authRoutes);
+app.use('/admin', adminRoutes); // Admin routes
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
