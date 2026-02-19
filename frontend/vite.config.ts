@@ -8,8 +8,10 @@ export default defineConfig({
     port: 5173,
     strictPort: false,
     hmr: {
-      overlay: true
-    }
+      overlay: true,
+      clientPort: 443
+    },
+    allowedHosts: ['.loca.lt']
   },
   optimizeDeps: {
     include: [
