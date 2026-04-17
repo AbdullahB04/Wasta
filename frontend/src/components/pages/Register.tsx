@@ -20,6 +20,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 const RegistrationForm = () => {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ const RegistrationForm = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch('http://localhost:3000/category');
+        const response = await fetch(API_ENDPOINTS.category);
         
         // Check if response is ok
         if (!response.ok) {
@@ -179,7 +180,7 @@ const RegistrationForm = () => {
 
       console.log('Sending payload:', payload);
 
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

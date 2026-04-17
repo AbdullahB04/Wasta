@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { auth } from '../../config/firebase';
+import { API_ENDPOINTS } from '../../config/api';
 
 const LoginForm = () => {
   usePageTitle('Login');
@@ -66,7 +67,7 @@ const LoginForm = () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
         const token = await currentUser.getIdToken();
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const response = await fetch(API_ENDPOINTS.auth.me, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

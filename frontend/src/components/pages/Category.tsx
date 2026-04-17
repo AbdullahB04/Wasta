@@ -9,6 +9,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface CategoryType {
   id: string;
@@ -25,7 +26,7 @@ const Category = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/category');
+        const response = await fetch(API_ENDPOINTS.category);
         const data = await response.json();
         setCategories(data);
       } catch (error) {

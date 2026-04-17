@@ -17,6 +17,7 @@ import { useToast } from "../hooks/use-toast";
 import Avatar from '@mui/material/Avatar';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface FeedbackType {
   id: string;
@@ -109,7 +110,7 @@ const WorkerDashboard = () => {
       // ✅ Fetch feedbacks for this worker
       const fetchFeedbacks = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/workers/${dbUser.id}/feedback`);
+          const response = await fetch(API_ENDPOINTS.workers.feedback(dbUser.id));
           const data = await response.json();
           setFeedbacks(data);
         } catch (error) {
@@ -199,7 +200,7 @@ const WorkerDashboard = () => {
 
       console.log('Sending update:', payload);
       
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.auth.me, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -5,6 +5,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface WorkerType {
   id: string;
@@ -89,7 +90,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
       try {
         setLoading(true);
         console.log('🔍 Fetching worker with ID:', workerId);
-        const response = await fetch(`http://localhost:3000/workers/${workerId}`);
+        const response = await fetch(API_ENDPOINTS.workers.byId(workerId));
         console.log('📡 Response status:', response.status);
         const data = await response.json();
         console.log('📦 Received data:', data);
@@ -118,7 +119,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
         }
 
         // Fetch feedbacks
-        const feedbackResponse = await fetch(`http://localhost:3000/workers/${workerId}/feedback`);
+        const feedbackResponse = await fetch(API_ENDPOINTS.workers.feedback(workerId));
         const feedbackData = await feedbackResponse.json();
         setFeedbacks(feedbackData);
         console.log('📝 Fetched feedbacks:', feedbackData.length);
@@ -156,7 +157,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
 
     try {
       setIsSubmitting(true);
-      const response = await fetch(`http://localhost:3000/workers/${workerId}/feedback`, {
+      const response = await fetch(API_ENDPOINTS.workers.feedback(workerId), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

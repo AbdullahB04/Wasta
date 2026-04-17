@@ -14,6 +14,7 @@ import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 
 const UserDashboard = () => {
@@ -112,7 +113,7 @@ const UserDashboard = () => {
 
       console.log('Sending update with image size:', formData.profileImage?.length || 0);
       
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.auth.me, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

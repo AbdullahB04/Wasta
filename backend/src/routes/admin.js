@@ -1,34 +1,53 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import admin from 'firebase-admin';
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// Middleware to check if user is admin
-const isAdmin = async (req, res, next) => {
+// Middleware to verify Firebase token and check admin role
+const verifyAdmin = async (req, res, next) => {
   try {
-    const { userId } = req.body;
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    // Get token from Authorization header
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ error: 'No authentication token provided' });
     }
 
+    // Verify Firebase token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const firebaseUid = decodedToken.uid;
+
+    // Get user from database using firebaseUid
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { firebaseUid }
     });
 
-    if (!user || user.role !== 'ADMIN') {
-      return res.status(403).json({ error: 'Access denied. Admin only.' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
+    if (user.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
+    }
+
+    // Attach user to request for use in routes
+    req.user = user;
+    req.firebaseUser = decodedToken;
     next();
   } catch (error) {
-    res.status(500).json({ error: 'Authorization check failed' });
+    console.error('Admin verification error:', error);
+    if (error.code === 'auth/id-token-expired') {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+    res.status(401).json({ error: 'Invalid authentication token' });
   }
 };
 
 // ==================== DASHBOARD STATISTICS ====================
 
-router.get('/stats', async (req, res) => {
+router.get('/stats', verifyAdmin, async (req, res) => {
   try {
     const [totalUsers, totalWorkers, totalServices, totalFeedback, activeWorkers, recentUsers] = await Promise.all([
       prisma.user.count(),
@@ -72,7 +91,7 @@ router.get('/stats', async (req, res) => {
 
 // ==================== USER MANAGEMENT ====================
 
-router.get('/users', async (req, res) => {
+router.get('/users', verifyAdmin, async (req, res) => {
   try {
     const users = await prisma.user.findMany({
       select: {
@@ -104,7 +123,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -121,7 +140,7 @@ router.delete('/users/:id', async (req, res) => {
 
 // ==================== WORKER MANAGEMENT ====================
 
-router.get('/workers', async (req, res) => {
+router.get('/workers', verifyAdmin, async (req, res) => {
   try {
     const workers = await prisma.worker.findMany({
       include: {
@@ -165,7 +184,7 @@ router.get('/workers', async (req, res) => {
   }
 });
 
-router.patch('/workers/:id/toggle-active', async (req, res) => {
+router.patch('/workers/:id/toggle-active', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -190,7 +209,7 @@ router.patch('/workers/:id/toggle-active', async (req, res) => {
   }
 });
 
-router.delete('/workers/:id', async (req, res) => {
+router.delete('/workers/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -213,7 +232,7 @@ router.delete('/workers/:id', async (req, res) => {
 
 // ==================== SERVICE/CATEGORY MANAGEMENT ====================
 
-router.get('/services', async (req, res) => {
+router.get('/services', verifyAdmin, async (req, res) => {
   try {
     const services = await prisma.service.findMany({
       include: {
@@ -235,7 +254,7 @@ router.get('/services', async (req, res) => {
   }
 });
 
-router.post('/services', async (req, res) => {
+router.post('/services', verifyAdmin, async (req, res) => {
   try {
     const { name } = req.body;
 
@@ -254,7 +273,7 @@ router.post('/services', async (req, res) => {
   }
 });
 
-router.patch('/services/:id', async (req, res) => {
+router.patch('/services/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -275,7 +294,7 @@ router.patch('/services/:id', async (req, res) => {
   }
 });
 
-router.delete('/services/:id', async (req, res) => {
+router.delete('/services/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -303,7 +322,7 @@ router.delete('/services/:id', async (req, res) => {
 
 // ==================== FEEDBACK MANAGEMENT ====================
 
-router.get('/feedbacks', async (req, res) => {
+router.get('/feedbacks', verifyAdmin, async (req, res) => {
   try {
     const feedbacks = await prisma.feedback.findMany({
       include: {
@@ -338,7 +357,7 @@ router.get('/feedbacks', async (req, res) => {
   }
 });
 
-router.delete('/feedbacks/:id', async (req, res) => {
+router.delete('/feedbacks/:id', verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     

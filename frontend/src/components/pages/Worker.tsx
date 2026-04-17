@@ -9,6 +9,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface WorkerType {
   id: string;
@@ -82,7 +83,7 @@ const Worker = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/workers'); // Changed from /api/workers
+        const response = await fetch(API_ENDPOINTS.workers.list);
         const data = await response.json();
         setWorkers(data);
       } catch (error) {

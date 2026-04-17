@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_ENDPOINTS } from '../../config/api';
 import { 
   Users, 
   Briefcase, 
@@ -103,7 +104,7 @@ interface Feedback {
 
 const AdminDashboard = () => {
   usePageTitle('Admin Dashboard');
-  const { dbUser } = useAuth();
+  const { dbUser, currentUser } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -136,29 +137,41 @@ const AdminDashboard = () => {
     }
   }, [dbUser, navigate]);
 
+  // Helper function to get auth headers
+  const getAuthHeaders = async () => {
+    if (!currentUser) return {};
+    const token = await currentUser.getIdToken();
+    return {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+  };
+
   // Fetch data based on active tab
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const headers = await getAuthHeaders();
+        
         if (activeTab === 'overview') {
-          const res = await fetch('http://localhost:3000/admin/stats');
+          const res = await fetch(API_ENDPOINTS.admin.stats, { headers });
           const data = await res.json();
           setStats(data);
         } else if (activeTab === 'users') {
-          const res = await fetch('http://localhost:3000/admin/users');
+          const res = await fetch(API_ENDPOINTS.admin.users, { headers });
           const data = await res.json();
           setUsers(data);
         } else if (activeTab === 'workers') {
-          const res = await fetch('http://localhost:3000/admin/workers');
+          const res = await fetch(API_ENDPOINTS.admin.workers, { headers });
           const data = await res.json();
           setWorkers(data);
         } else if (activeTab === 'services') {
-          const res = await fetch('http://localhost:3000/admin/services');
+          const res = await fetch(API_ENDPOINTS.admin.services, { headers });
           const data = await res.json();
           setServices(data);
         } else if (activeTab === 'feedback') {
-          const res = await fetch('http://localhost:3000/admin/feedbacks');
+          const res = await fetch(API_ENDPOINTS.admin.feedbacks, { headers });
           const data = await res.json();
           setFeedbacks(data);
         }
@@ -190,8 +203,10 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/admin/users/${userId}`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.users}/${userId}`, {
         method: 'DELETE',
+        headers,
       });
 
       if (res.ok) {
@@ -213,8 +228,10 @@ const AdminDashboard = () => {
 
   const handleToggleWorkerStatus = async (workerId: string) => {
     try {
-      const res = await fetch(`http://localhost:3000/admin/workers/${workerId}/toggle-active`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.workers}/${workerId}/toggle-active`, {
         method: 'PATCH',
+        headers,
       });
 
       if (res.ok) {
@@ -239,8 +256,10 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this worker?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/admin/workers/${workerId}`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.workers}/${workerId}`, {
         method: 'DELETE',
+        headers,
       });
 
       if (res.ok) {
@@ -264,9 +283,10 @@ const AdminDashboard = () => {
     if (!newServiceName.trim()) return;
 
     try {
-      const res = await fetch('http://localhost:3000/admin/services', {
+      const headers = await getAuthHeaders();
+      const res = await fetch(API_ENDPOINTS.admin.services, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ name: newServiceName }),
       });
 
@@ -293,9 +313,10 @@ const AdminDashboard = () => {
     if (!editServiceName.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/admin/services/${serviceId}`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.services}/${serviceId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ name: editServiceName }),
       });
 
@@ -323,8 +344,10 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this service?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/admin/services/${serviceId}`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.services}/${serviceId}`, {
         method: 'DELETE',
+        headers,
       });
 
       if (res.ok) {
@@ -355,8 +378,10 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this feedback?')) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/admin/feedbacks/${feedbackId}`, {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_ENDPOINTS.admin.feedbacks}/${feedbackId}`, {
         method: 'DELETE',
+        headers,
       });
 
       if (res.ok) {

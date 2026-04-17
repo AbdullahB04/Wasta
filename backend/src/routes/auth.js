@@ -77,7 +77,6 @@ router.post('/register', async (req, res) => {
           lastName,
           phone,
           address,
-          password,
           position: serviceExists.name,
           WorkerService: {
             create: {
@@ -107,8 +106,7 @@ router.post('/register', async (req, res) => {
         firstName,
         lastName,
         phone,
-        address,
-        password
+        address
       }
     });
     

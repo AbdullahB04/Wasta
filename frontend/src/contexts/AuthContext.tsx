@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { API_ENDPOINTS } from '../config/api';
 
 // Define types for database user
 export interface DbUser {
@@ -54,7 +55,7 @@ export const AuthContextProvider = ({ children }: AuthProviderProps) => {
   const fetchUserData = async (firebaseUser: FirebaseUser, retries = 5): Promise<void> => {
     try {
       const token = await firebaseUser.getIdToken();
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.auth.me, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import admin from 'firebase-admin';
 import serviceAccount from './firebase-admin-sdk.json' with { type: 'json' };
-import bcrypt from 'bcrypt';
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -25,7 +24,7 @@ async function createAdmin() {
     };
 
     console.log('📧 Email:', adminData.email);
-    console.log('🔐 Password:', adminData.password);
+    console.log('� Name:', adminData.firstName, adminData.lastName);
     console.log('');
 
     // Check if admin already exists
@@ -57,18 +56,12 @@ async function createAdmin() {
     });
     console.log('✅ Firebase user created:', firebaseUser.uid);
 
-    // Hash password
-    console.log('2️⃣  Hashing password...');
-    const hashedPassword = await bcrypt.hash(adminData.password, 10);
-    console.log('✅ Password hashed');
-
-    // Create admin in database
-    console.log('3️⃣  Creating admin in database...');
+    // Create admin in database (password stored only in Firebase)
+    console.log('2️⃣  Creating admin in database...');
     const adminUser = await prisma.user.create({
       data: {
         firebaseUid: firebaseUser.uid,
         email: adminData.email,
-        password: hashedPassword,
         firstName: adminData.firstName,
         lastName: adminData.lastName,
         role: 'ADMIN'
@@ -78,10 +71,10 @@ async function createAdmin() {
 
     console.log('\n🎉 SUCCESS! Admin account created:');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('Email:   ', adminData.email);
-    console.log('Password:', adminData.password);
-    console.log('Role:    ', 'ADMIN');
+    console.log('Email:', adminData.email);
+    console.log('Role: ', 'ADMIN');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('⚠️  Password: <As configured in script>');
     console.log('\n🚀 Login at: http://localhost:5173/login');
     console.log('📊 Admin Dashboard: http://localhost:5173/admin/dashboard\n');
 

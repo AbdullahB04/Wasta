@@ -7,6 +7,7 @@ import {
   type User as FirebaseUser
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { API_ENDPOINTS } from '../config/api';
 
 interface RegisterData {
   firstName: string;
@@ -71,7 +72,7 @@ class AuthService {
         bio: userData.bio || ''
       });
 
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ class AuthService {
       const idToken = await firebaseUser.getIdToken();
 
       // Fetch user data from your backend
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.auth.me, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${idToken}`
