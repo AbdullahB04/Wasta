@@ -41,7 +41,7 @@ const Category = () => {
 
   // Map category names to icons
   const getIconForCategory = (name: string) => {
-    const iconMap: { [key: string]: JSX.Element } = {
+    const iconMap: { [key: string]: React.ReactNode } = {
       'plumbing': <Wrench className="w-10 h-10 text-blue-500" />,
       'electrical': <Zap className="w-10 h-10 text-blue-500" />,
       'painting': <PaintBucket className="w-10 h-10 text-blue-500" />,
@@ -178,7 +178,7 @@ const Category = () => {
               }
             }}
           >
-            {categories.map((cat, idx) => (
+            {categories.map((cat) => (
               <motion.div
                 key={cat.id}
                 variants={{

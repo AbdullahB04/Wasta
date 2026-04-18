@@ -8,7 +8,6 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 import React, { useRef, useState } from "react";
-import logo from '../../assets/logo1.PNG'
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -39,13 +38,6 @@ interface MobileNavProps {
 interface MobileNavHeaderProps {
   children: React.ReactNode;
   className?: string;
-}
-
-interface MobileNavMenuProps {
-  children: React.ReactNode;
-  className?: string;
-  isOpen: boolean;
-  onClose: () => void;
 }
 
 export const Navbar = ({ children, className }: NavbarProps) => {
@@ -199,8 +191,11 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
-  onClose,
-}: MobileNavMenuProps) => {
+}: {
+  children: React.ReactNode;
+  className?: string;
+  isOpen: boolean;
+}) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -240,12 +235,7 @@ export const NavbarLogo = () => {
       href="#"
       className="relative z-20 ml-4 flex items-center space-x-2 space-x-reverse px-2 py-1 text-sm font-normal text-black"
     >
-      <img
-        src={logo}
-        alt="logo"
-        width={80}
-        height={80}
-      />
+      <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg flex items-center justify-center font-bold text-white text-sm">Wasta</div>
       {/* Changed "Startup" to "واستە" */}
       <span className="font-medium text-black dark:text-white font-[Vazirmatn]">واستە</span>
     </a>

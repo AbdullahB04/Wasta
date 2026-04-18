@@ -43,13 +43,16 @@ const Worker = () => {
   };
 
   const [workers, setWorkers] = useState<WorkerType[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    // Get category from URL query parameter
     const categoryParam = searchParams.get('category');
     return categoryParam || "all";
   });
   const [selectedCity, setSelectedCity] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const ITEMS_PER_PAGE = 12;
 
   // Translation helper for positions
   const getPositionTranslation = (position?: string) => {
@@ -83,16 +86,20 @@ const Worker = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.workers.list);
-        const data = await response.json();
-        setWorkers(data);
+        setLoading(true);
+        const response = await fetch(API_ENDPOINTS.workers.list(currentPage, ITEMS_PER_PAGE));
+        const result = await response.json();
+        setWorkers(result.data);
+        setTotalPages(result.pagination.totalPages);
       } catch (error) {
         console.error('Error fetching workers:', error);
+      } finally {
+        setLoading(false);
       }
     };
     
     fetchWorkers();
-  }, []);
+  }, [currentPage]);
 
   const categories = [
     { value: 'plumbing', label: t('plumbing') },
@@ -114,7 +121,6 @@ const Worker = () => {
                          worker.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          worker.position?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Map category to position for filtering
     const categoryToPosition: { [key: string]: string[] } = {
       'plumbing': ['plumbing', 'plumber'],
       'electrical': ['electrical', 'electrician'],
@@ -134,6 +140,11 @@ const Worker = () => {
     
     return matchesSearch && matchesCategory && matchesCity;
   });
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, selectedCity]);
 
   const navItems = [
     { name: t('home'), link: '/' },
@@ -166,7 +177,12 @@ const Worker = () => {
 
         {/* Workers Grid Only */}
         <section className="max-w-7xl mx-auto px-6 py-12">
-          {filteredWorkers.length > 0 ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-24">
+              <div className="inline-block w-12 h-12 border-8 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-slate-500 mt-4 text-lg">{t('Loading professionals...')}</p>
+            </div>
+          ) : filteredWorkers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredWorkers.map((worker) => (
                 <div key={worker.id} className="group bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
@@ -342,77 +358,127 @@ const Worker = () => {
 
       {/* Workers Grid */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredWorkers.map((worker) => (
-            <div key={worker.id} className="group bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-              {/* Header: MUI Avatar & Info */}
-              <div className="flex items-start gap-4 mb-4">
-                <div className="relative shrink-0">
-                  {/* --- MUI AVATAR USED HERE --- */}
-                  <Avatar 
-                    alt={worker.firstName || 'Worker Avatar'} 
-                    src={worker.image} 
-                    sx={{ width: 64, height: 64, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
-                    {worker.firstName} {worker.lastName}
-                  </h3>
-                  <div className="flex flex-col gap-2 mt-1">
-                    {worker.averageRating !== null && worker.averageRating !== undefined ? (
-                      <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
-                        <Star className="w-3 h-3 fill-amber-400" />
-                        <span className="text-slate-700">{worker.averageRating}</span>
-                        <span className="text-slate-400">({worker.totalFeedbacks})</span>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="inline-block w-12 h-12 border-8 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-slate-500 mt-4 text-lg">{t('Loading professionals...')}</p>
+          </div>
+        ) : filteredWorkers.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredWorkers.map((worker) => (
+              <div key={worker.id} className="group bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                {/* Header: MUI Avatar & Info */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="relative shrink-0">
+                    {/* --- MUI AVATAR USED HERE --- */}
+                    <Avatar 
+                      alt={worker.firstName || 'Worker Avatar'} 
+                      src={worker.image} 
+                      sx={{ width: 64, height: 64, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
+                      {worker.firstName} {worker.lastName}
+                    </h3>
+                    <div className="flex flex-col gap-2 mt-1">
+                      {worker.averageRating !== null && worker.averageRating !== undefined ? (
+                        <div className="flex items-center gap-1 text-amber-400 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-fit">
+                          <Star className="w-3 h-3 fill-amber-400" />
+                          <span className="text-slate-700">{worker.averageRating}</span>
+                          <span className="text-slate-400">({worker.totalFeedbacks})</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-slate-400 text-xs font-bold bg-slate-50 px-2 py-0.5 rounded-full w-fit">
+                          <Star className="w-3 h-3" />
+                          <span>{t("No ratings")}</span>
+                        </div>
+                      )}
+                      
+                      {/* Active Status Badge */}
+                      <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
+                        {worker.isActive ? t("Available") : t("Not Available")}
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-slate-400 text-xs font-bold bg-slate-50 px-2 py-0.5 rounded-full w-fit">
-                        <Star className="w-3 h-3" />
-                        <span>{t("No ratings")}</span>
-                      </div>
-                    )}
-                    
-                    {/* Active Status Badge */}
-                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold w-fit ${worker.isActive ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${worker.isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-                      {worker.isActive ? t("Available") : t("Not Available")}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
-                  <span className="text-sm text-slate-700 font-medium">{getPositionTranslation(worker.position) || 'N/A'}</span>
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("profession")}:</span>
+                    <span className="text-sm text-slate-700 font-medium">{getPositionTranslation(worker.position) || 'N/A'}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("phone")}:</span>
+                    <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
+                  </div>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase shrink-0">{t("phone")}:</span>
-                  <span className="text-sm text-slate-700">{formatPhone(worker.phone)}</span>
-                </div>
-              </div>
 
-              {/* Footer: Location & Action */}
-              <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 text-slate-400 text-sm">
-                  <MapPin className="w-4 h-4" />
-                  <span className="truncate max-w-[100px]">{worker.address}</span>
-                </div>
-                
-                <div className="shrink-0">
-                  <BasicModal workerId={worker.id}>
-                    <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
-                      {t("View Profile")}
-                    </button>
-                  </BasicModal>
+                {/* Footer: Location & Action */}
+                <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5 text-slate-400 text-sm">
+                    <MapPin className="w-4 h-4" />
+                    <span className="truncate max-w-[100px]">{worker.address}</span>
+                  </div>
+                  
+                  <div className="shrink-0">
+                    <BasicModal workerId={worker.id}>
+                      <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
+                        {t("View Profile")}
+                      </button>
+                    </BasicModal>
+                  </div>
                 </div>
               </div>
+            ))}
             </div>
-          ))}
-        </div>
 
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-center gap-2 mt-12">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {t('Previous')}
+              </button>
+              
+              <div className="flex items-center gap-2">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const pageNum = currentPage > 3 ? currentPage - 2 + i : i + 1;
+                  return pageNum <= totalPages ? (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-3 py-2 rounded-lg font-semibold transition-colors ${
+                        currentPage === pageNum
+                          ? 'bg-blue-600 text-white'
+                          : 'border border-slate-200 text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ) : null;
+                })}
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {t('Next')}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-24">
+            <p className="text-slate-500 text-xl">{t('No professionals found')}</p>
+          </div>
+        )}
       </section>
       
       <Footer />

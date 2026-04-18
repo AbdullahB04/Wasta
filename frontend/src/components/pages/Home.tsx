@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 const Home = () => {
   usePageTitle('Home')
-  const { dbUser, loading } = useAuth();
+  const { dbUser } = useAuth();
   const { t } = useTranslation();
   const { i18n } = useTranslation();
   

@@ -9,12 +9,16 @@ interface BasicModalProps {
   buttonText?: string;
   workerId: string;
   children?: React.ReactNode;
+  onClose?: () => void;
 }
 
-export default function BasicModal({ buttonText = 'View profile', workerId, children }: BasicModalProps) {
+export default function BasicModal({ buttonText = 'View profile', workerId, children, onClose }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    onClose?.();
+  };
 
   return (
     <div>
@@ -27,13 +31,13 @@ export default function BasicModal({ buttonText = 'View profile', workerId, chil
       )}
       <Modal
         open={open}
-        onClose={() => { handleClose(); window.location.reload(); }}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box className="max-w-3xl mx-auto mt-20 bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 p-6 relative">
             <button 
-              onClick={() => { handleClose(); window.location.reload(); }}
+              onClick={handleClose}
               className="absolute top-4 right-4 z-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full p-2 transition-colors"
             >
               <X size={20} />

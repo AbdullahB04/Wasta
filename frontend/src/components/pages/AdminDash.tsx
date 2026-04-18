@@ -6,7 +6,6 @@ import {
   Users, 
   Briefcase, 
   Star, 
-  MessageSquare, 
   TrendingUp, 
   Shield,
   Search,
@@ -138,7 +137,7 @@ const AdminDashboard = () => {
   }, [dbUser, navigate]);
 
   // Helper function to get auth headers
-  const getAuthHeaders = async () => {
+  const getAuthHeaders = async (): Promise<Record<string, string>> => {
     if (!currentUser) return {};
     const token = await currentUser.getIdToken();
     return {
@@ -437,7 +436,7 @@ const AdminDashboard = () => {
                 <ArrowLeft className="w-4 h-4" />
                 Back to Home
               </Button>
-              <Button onClick={handleLogout} variant="destructive" className="gap-2">
+              <Button onClick={handleLogout} variant="outline" className="gap-2 text-red-600 border-red-300 hover:bg-red-50">
                 <LogOut className="w-4 h-4" />
                 Logout
               </Button>
@@ -584,13 +583,14 @@ const AdminDashboard = () => {
                               </p>
                             </div>
                           </div>
-                          <Button
-                            onClick={() => handleDeleteUser(user.id)}
-                            variant="destructive"
-                            size="sm"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                            <Button
+                              onClick={() => handleDeleteUser(user.id)}
+                              variant="outline"
+                              size="sm"
+                              className="text-red-600 border-red-300 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                         </div>
                       ))}
                     </div>
@@ -662,8 +662,9 @@ const AdminDashboard = () => {
                             </Button>
                             <Button
                               onClick={() => handleDeleteWorker(worker.id)}
-                              variant="destructive"
+                              variant="outline"
                               size="sm"
+                              className="text-red-600 border-red-300 hover:bg-red-50"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -764,7 +765,8 @@ const AdminDashboard = () => {
                                 <Button
                                   onClick={() => handleDeleteService(service.id)}
                                   size="sm"
-                                  variant="destructive"
+                                  variant="outline"
+                                  className="text-red-600 border-red-300 hover:bg-red-50"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -825,8 +827,9 @@ const AdminDashboard = () => {
                             </div>
                             <Button
                               onClick={() => handleDeleteFeedback(feedback.id)}
-                              variant="destructive"
+                              variant="outline"
                               size="sm"
+                              className="text-red-600 border-red-300 hover:bg-red-50"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>

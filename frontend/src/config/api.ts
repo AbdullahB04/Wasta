@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
     feedbacks: `${API_URL}/admin/feedbacks`,
   },
   workers: {
-    list: `${API_URL}/workers`,
+    list: (page: number = 1, limit: number = 12) => `${API_URL}/workers?page=${page}&limit=${limit}`,
     byId: (id: string) => `${API_URL}/workers/${id}`,
     feedback: (id: string) => `${API_URL}/workers/${id}/feedback`,
   },

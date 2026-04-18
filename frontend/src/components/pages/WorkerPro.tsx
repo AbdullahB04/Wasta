@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Clock, Star, MessageCircle, User, MessageSquare, X } from 'lucide-react';
+import { MapPin, Clock, Star, MessageCircle, User, X } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import { LiaTelegramPlane } from "react-icons/lia";
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
@@ -37,11 +38,13 @@ interface FeedbackType {
 }
 
 interface WorkerProfileModalProps {
-  workerId: string;
+  workerId?: string;
 }
 
-const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
+const WorkerProfileModal = ({ workerId: propWorkerId }: WorkerProfileModalProps) => {
   usePageTitle('Worker Profile');
+  const { id: paramWorkerId } = useParams<{ id: string }>();
+  const workerId = propWorkerId || paramWorkerId;
   const { t } = useTranslation();
   const { dbUser } = useAuth();
   const [worker, setWorker] = useState<WorkerType | null>(null);
@@ -86,6 +89,8 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
   };
 
   useEffect(() => {
+    if (!workerId) return;
+    
     const fetchWorker = async () => {
       try {
         setLoading(true);
@@ -157,7 +162,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
 
     try {
       setIsSubmitting(true);
-      const response = await fetch(API_ENDPOINTS.workers.feedback(workerId), {
+      const response = await fetch(API_ENDPOINTS.workers.feedback(workerId!), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -338,7 +343,7 @@ const WorkerProfileModal = ({ workerId }: WorkerProfileModalProps) => {
               }`}
               title={!dbUser ? 'Please log in to leave feedback' : dbUser.role === 'WORKER' ? 'Workers cannot leave feedback' : ''}
             >
-              <MessageSquare className="w-6 h-6" />
+              <MessageCircle className="w-6 h-6" />
               {t("Leave Feedback")}
             </button>
 

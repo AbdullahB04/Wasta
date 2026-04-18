@@ -8,8 +8,8 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 import React, { useRef, useState } from "react";
-import logo from '../../assets/logo1.PNG'
 import { useTranslation } from 'react-i18next';
+import logo1 from '../../assets/logo1.png';
 
 
 interface NavbarProps {
@@ -41,13 +41,6 @@ interface MobileNavProps {
 interface MobileNavHeaderProps {
   children: React.ReactNode;
   className?: string;
-}
-
-interface MobileNavMenuProps {
-  children: React.ReactNode;
-  className?: string;
-  isOpen: boolean;
-  onClose: () => void;
 }
 
 export const Navbar = ({ children, className }: NavbarProps) => {
@@ -201,8 +194,11 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
-  onClose,
-}: MobileNavMenuProps) => {
+}: {
+  children: React.ReactNode;
+  className?: string;
+  isOpen: boolean;
+}) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -242,13 +238,9 @@ export const NavbarLogo = () => {
       href="#"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
-      <img
-        src={logo}
-        alt="logo"
-        width={80}
-        height={80}
-      />
-      <span className="font-medium text-black dark:text-white">Startup</span>
+      {/* <img src="/assets/logo1.png" alt="Wasta" className="h-12 w-12" /> */}
+      <img src={logo1} alt="Wasta" className="h-14 w-14" />
+      <span className="font-medium text-black dark:text-white">Wasta</span>
     </a>
   );
 };

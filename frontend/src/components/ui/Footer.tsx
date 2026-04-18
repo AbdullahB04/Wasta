@@ -4,11 +4,10 @@ import {
   Github,  
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/logo1.PNG';
 import { useTranslation } from 'react-i18next';
+import logoW from '../../assets/logoW.png';
 
-
-
+  
 const Footer = () => {
   const { t } = useTranslation();
 
@@ -21,7 +20,7 @@ const Footer = () => {
           
           {/* 1. Brand / Logo */}
           <div className="flex items-center gap-2.5">
-              <img src={logo} alt="Logo" className="h-17 w-20 brightness-0 invert" />
+            <img src={logoW} alt="Wasta" className="h-20 w-20" />
           </div>
 
           {/* 2. Navigation Links */}
@@ -57,7 +56,7 @@ const Footer = () => {
 };
 
 // Helper component for Social Buttons to keep code clean
-const SocialLink = ({ href, icon }) => {
+const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => {
   return (
     <a 
       href={href}

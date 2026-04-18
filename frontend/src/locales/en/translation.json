@@ -115,6 +115,16 @@
 
     "reviews": "reviews",
     "No ratings yet": "No ratings yet",
-    "Worker not found": "Worker not found"
+    "Worker not found": "Worker not found",
+    
+    "Previous": "Previous",
+    "Next": "Next",
+    "Page": "Page",
+    "of": "of",
+    "professionals": "professionals",
+    "Loading professionals...": "Loading professionals...",
+    "Back to Categories": "Back to Categories",
+    "Professionals": "Professionals",
+    "No professionals found": "No professionals found"
 
 }

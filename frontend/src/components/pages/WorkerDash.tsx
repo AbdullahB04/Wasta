@@ -7,7 +7,7 @@ import { Switch } from "../ui/switch";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import { X, Plus, Save, ArrowLeft, User, Briefcase, Globe, MapPin, Camera, LogOut, Star, MessageSquare } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,7 +43,7 @@ const WorkerDashboard = () => {
   const [formData, setFormData] = useState({
     firstName: dbUser?.firstName || "",
     lastName: dbUser?.lastName || "",
-    age: dbUser?.age ? String(dbUser.age) : "",
+    age: "",
     phoneNumber: dbUser?.phone || "",
     location: dbUser?.address || "",
     description: dbUser?.bio || "",
@@ -79,7 +79,7 @@ const WorkerDashboard = () => {
         phoneNumber: dbUser.phone || "",
         location: dbUser.address || "",
         profileImage: dbUser.image || "",
-        age: dbUser.age ? String(dbUser.age) : "",
+        age: "",
         description: dbUser.bio || "",
         position: dbUser.position || "",
       }));
